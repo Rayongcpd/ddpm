@@ -1244,6 +1244,11 @@ textarea.form-control {
 
   .filter-bar { flex-direction: column; }
 
+  .district-cards-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: var(--space-md); 
+  }
+
   .btn-print {
     bottom: var(--space-md);
     right: var(--space-md);
@@ -1256,6 +1261,47 @@ textarea.form-control {
   .summary-cards { grid-template-columns: 1fr; }
   .policy-cards { grid-template-columns: 1fr; }
   .casualty-cards { grid-template-columns: 1fr; }
+
+  /* Compact District Cards for Mobile */
+  .district-cards-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+  .district-card {
+    padding: var(--space-md);
+  }
+  .district-card-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-sm);
+  }
+  .district-card-title {
+    font-size: 1.05rem;
+  }
+  .district-stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xs);
+  }
+  .district-stat-row {
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-xs);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-border);
+  }
+  .district-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  .district-stat-value {
+    font-size: 1.1rem;
+    margin-top: 2px;
+  }
 }
 
 /* ===== Print Styles ===== */

@@ -372,17 +372,19 @@ function renderDistrictCards(districts, sortBy = 'name') {
         <div class="district-card-header">
           <div class="district-card-title">อ.${d.name}</div>
         </div>
-        <div class="district-stat-row">
-          <span class="district-stat-label">🚗 อุบัติเหตุ</span>
-          <span class="district-stat-value accidents">${d.accidents}</span>
-        </div>
-        <div class="district-stat-row">
-          <span class="district-stat-label">🏥 บาดเจ็บ</span>
-          <span class="district-stat-value injuries">${d.injuries}</span>
-        </div>
-        <div class="district-stat-row">
-          <span class="district-stat-label">✝️ เสียชีวิต</span>
-          <span class="district-stat-value deaths">${d.deaths}</span>
+        <div class="district-stats-container">
+          <div class="district-stat-row">
+            <span class="district-stat-label">🚗 อุบัติเหตุ</span>
+            <span class="district-stat-value accidents">${d.accidents}</span>
+          </div>
+          <div class="district-stat-row">
+            <span class="district-stat-label">🏥 บาดเจ็บ</span>
+            <span class="district-stat-value injuries">${d.injuries}</span>
+          </div>
+          <div class="district-stat-row">
+            <span class="district-stat-label">✝️ เสียชีวิต</span>
+            <span class="district-stat-value deaths">${d.deaths}</span>
+          </div>
         </div>
       </div>
     `;
