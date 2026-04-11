@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ระบบจัดการข้อมูลสถิติอุบัติเหตุทางถนน - Admin Panel">
+  <title>🔑 Admin - สถิติอุบัติเหตุทางถนน</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <span class="emoji">🚦</span>
+        <span>สถิติอุบัติเหตุทางถนน จ.สุโขทัย</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" id="nav-dashboard">📊 Dashboard</a></li>
+        <li><a href="detail.html" id="nav-detail">📋 รายละเอียด</a></li>
+        <li><a href="compare.html" id="nav-compare">📈 เปรียบเทียบ</a></li>
+        <li><a href="admin.html" class="active" id="nav-admin">🔑 Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container page-wrapper">
+
+    <!-- Login Section -->
+    <div id="loginSection">
+      <div class="login-container">
+        <div class="card login-card">
+          <div class="login-icon">🔐</div>
+          <h2>เข้าสู่ระบบ Admin</h2>
+          <p class="text-secondary mb-lg">กรุณาใส่รหัสผ่านเพื่อจัดการข้อมูล</p>
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <input type="password" class="form-control" id="loginPassword"
+                     placeholder="รหัสผ่าน" autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100" id="loginBtn">
+              🔑 เข้าสู่ระบบ
+            </button>
+          </form>
+          <p class="text-muted font-sm mt-lg">
+            ⚠️ เฉพาะเจ้าหน้าที่ที่ได้รับอนุญาตเท่านั้น
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Panel (hidden until login) -->
+    <div id="adminPanel" class="hidden">
+
+      <!-- Admin Header -->
+      <div class="flex-between mb-xl">
+        <div>
+          <h1 style="font-size:1.5rem;font-weight:700">📝 จัดการข้อมูล</h1>
+          <p class="text-secondary">เพิ่ม แก้ไข ลบ ข้อมูลสถิติอุบัติเหตุทางถนน</p>
+        </div>
+        <div class="flex-gap">
+          <select class="form-control" id="adminFestivalSelect" style="width:auto">
+            <option value="songkran">🎉 สงกรานต์</option>
+            <option value="newyear">🎄 ปีใหม่</option>
+          </select>
+          <select class="form-control" id="adminYearSelect" style="width:auto"></select>
+          <button class="btn btn-danger" onclick="handleLogout()">🚪 ออกจากระบบ</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="daily">📊 ข้อมูลรายวัน</button>
+        <button class="tab" data-tab="district">🏘️ ข้อมูลรายอำเภอ</button>
+        <button class="tab" data-tab="policy">⚠️ นโยบายเน้นหนัก</button>
+        <button class="tab" data-tab="casualty">🏥 บาดเจ็บ/เสียชีวิต</button>
+      </div>
+
+      <!-- ==================== TAB: Daily Stats ==================== -->
+      <div class="tab-panel active" id="panel-daily">
+        <div class="card mb-lg">
+          <h3 class="section-title">➕ เพิ่ม/แก้ไขข้อมูลรายวัน</h3>
+          <form onsubmit="saveDailyForm(event)">
+            <div class="form-inline">
+              <div class="form-group">
+                <label class="form-label">วันที่</label>
+                <select class="form-control date-select" id="dailyDate" required></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">อุบัติเหตุ (ครั้ง)</label>
+                <input type="number" class="form-control" id="dailyAccidents" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">บาดเจ็บ (ราย)</label>
+                <input type="number" class="form-control" id="dailyInjuries" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">เสียชีวิต (ราย)</label>
+                <input type="number" class="form-control" id="dailyDeaths" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">💾 บันทึก</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">📋 ข้อมูลที่บันทึกแล้ว</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>อุบัติเหตุ</th>
+                  <th>บาดเจ็บ</th>
+                  <th>เสียชีวิต</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="dailyTableBody">
+                <tr><td colspan="5" class="text-center text-muted p-lg">กำลังโหลด...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB: District Stats ==================== -->
+      <div class="tab-panel" id="panel-district">
+        <div class="card mb-lg">
+          <h3 class="section-title">➕ เพิ่ม/แก้ไขข้อมูลรายอำเภอ</h3>
+          <form onsubmit="saveDistrictForm(event)">
+            <div class="form-inline">
+              <div class="form-group">
+                <label class="form-label">วันที่</label>
+                <select class="form-control date-select" id="districtDate" required></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">อำเภอ</label>
+                <select class="form-control" id="districtName" required>
+                  <option value="">เลือกอำเภอ</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">อุบัติเหตุ</label>
+                <input type="number" class="form-control" id="districtAccidents" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">บาดเจ็บ</label>
+                <input type="number" class="form-control" id="districtInjuries" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">เสียชีวิต</label>
+                <input type="number" class="form-control" id="districtDeaths" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">💾 บันทึก</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">📋 ข้อมูลรายอำเภอ</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>อำเภอ</th>
+                  <th>อุบัติเหตุ</th>
+                  <th>บาดเจ็บ</th>
+                  <th>เสียชีวิต</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="districtTableBody">
+                <tr><td colspan="6" class="text-center text-muted p-lg">กำลังโหลด...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB: Policy Stats ==================== -->
+      <div class="tab-panel" id="panel-policy">
+        <div class="card mb-lg">
+          <h3 class="section-title">➕ เพิ่ม/แก้ไขข้อมูลนโยบายเน้นหนัก</h3>
+          <form onsubmit="savePolicyForm(event)">
+            <div class="form-inline">
+              <div class="form-group">
+                <label class="form-label">วันที่</label>
+                <select class="form-control date-select" id="policyDate" required></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">🍺 ดื่มแล้วขับ</label>
+                <input type="number" class="form-control" id="policyDrunk" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">🚫 ไม่คาดเข็มขัด</label>
+                <input type="number" class="form-control" id="policySeatbelt" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">⛑️ ไม่สวมหมวกฯ</label>
+                <input type="number" class="form-control" id="policyHelmet" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">🏎️ ขับเร็วเกิน</label>
+                <input type="number" class="form-control" id="policySpeed" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">💾 บันทึก</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">📋 ข้อมูลนโยบาย</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>ดื่มแล้วขับ</th>
+                  <th>ไม่คาดเข็มขัด</th>
+                  <th>ไม่สวมหมวกฯ</th>
+                  <th>ขับเร็วเกิน</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="policyTableBody">
+                <tr><td colspan="6" class="text-center text-muted p-lg">กำลังโหลด...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB: Casualty Details ==================== -->
+      <div class="tab-panel" id="panel-casualty">
+        <div class="flex-between mb-lg">
+          <h3 class="section-title" style="margin-bottom:0">🏥 รายละเอียดบาดเจ็บ/เสียชีวิต</h3>
+          <button class="btn btn-primary" onclick="showCasualtyForm()">➕ เพิ่มรายการ</button>
+        </div>
+
+        <div id="casualtyList">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+    </div><!-- /adminPanel -->
+  </div>
+
+  <!-- Casualty Modal -->
+  <div class="modal-overlay" id="casualtyModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📝 รายละเอียดบาดเจ็บ/เสียชีวิต</h3>
+        <button class="btn btn-icon btn-outline" onclick="closeCasualtyModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="casualtyForm" onsubmit="saveCasualtyForm(event)">
+          <input type="hidden" id="casualtyId">
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">วันที่เกิดเหตุ</label>
+              <input type="date" class="form-control" id="casualtyDate2" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">เวลา</label>
+              <input type="time" class="form-control" id="casualtyTime">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">อำเภอ</label>
+              <select class="form-control" id="casualtyDistrict">
+                <option value="">เลือกอำเภอ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">สถานที่</label>
+              <input type="text" class="form-control" id="casualtyLocation" placeholder="ถนน/ตำบล">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">ประเภทยานพาหนะ</label>
+              <select class="form-control" id="casualtyVehicle">
+                <option value="">เลือก</option>
+                <option value="รถจักรยานยนต์">🏍️ รถจักรยานยนต์</option>
+                <option value="รถยนต์">🚗 รถยนต์</option>
+                <option value="รถกระบะ">🛻 รถกระบะ</option>
+                <option value="รถจักรยาน">🚲 รถจักรยาน</option>
+                <option value="คนเดินเท้า">🚶 คนเดินเท้า</option>
+                <option value="อื่นๆ">📦 อื่นๆ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">สาเหตุ</label>
+              <select class="form-control" id="casualtyCause">
+                <option value="">เลือก</option>
+                <option value="เมาสุรา">🍺 เมาสุรา</option>
+                <option value="ขับเร็วเกินกำหนด">🏎️ ขับเร็วเกินกำหนด</option>
+                <option value="ตัดหน้ากระชั้นชิด">⚡ ตัดหน้ากระชั้นชิด</option>
+                <option value="ไม่สวมหมวกนิรภัย">⛑️ ไม่สวมหมวกนิรภัย</option>
+                <option value="ไม่คาดเข็มขัด">🚫 ไม่คาดเข็มขัด</option>
+                <option value="หลับใน">😴 หลับใน</option>
+                <option value="อื่นๆ">📝 อื่นๆ</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชื่อ-สกุล ผู้บาดเจ็บ/เสียชีวิต</label>
+            <input type="text" class="form-control" id="casualtyName" required placeholder="ชื่อ-นามสกุล">
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">เพศ</label>
+              <select class="form-control" id="casualtyGender">
+                <option value="">เลือก</option>
+                <option value="ชาย">ชาย</option>
+                <option value="หญิง">หญิง</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">อายุ (ปี)</label>
+              <input type="number" class="form-control" id="casualtyAge" min="0" max="150">
+            </div>
+            <div class="form-group">
+              <label class="form-label">สถานะ</label>
+              <select class="form-control" id="casualtyStatus" required>
+                <option value="">เลือก</option>
+                <option value="บาดเจ็บ">🏥 บาดเจ็บ</option>
+                <option value="เสียชีวิต">✝️ เสียชีวิต</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">หมายเหตุ/รายละเอียดเพิ่มเติม</label>
+            <textarea class="form-control" id="casualtyNotes" placeholder="รายละเอียดเพิ่มเติม..."></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding:0;border:0;margin-top:var(--space-md)">
+            <button type="button" class="btn btn-outline" onclick="closeCasualtyModal()">ยกเลิก</button>
+            <button type="submit" class="btn btn-primary">💾 บันทึก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+
+</body>
+</html>

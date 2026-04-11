@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="เปรียบเทียบสถิติอุบัติเหตุทางถนนระหว่างปี - จังหวัดสุโขทัย">
+  <title>📈 เปรียบเทียบปี - สถิติอุบัติเหตุทางถนน</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <span class="emoji">🚦</span>
+        <span>สถิติอุบัติเหตุทางถนน จ.สุโขทัย</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" id="nav-dashboard">📊 Dashboard</a></li>
+        <li><a href="detail.html" id="nav-detail">📋 รายละเอียด</a></li>
+        <li><a href="compare.html" class="active" id="nav-compare">📈 เปรียบเทียบ</a></li>
+        <li><a href="admin.html" id="nav-admin">🔑 Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container page-wrapper">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>📈 เปรียบเทียบสถิติอุบัติเหตุ ปีต่อปี</h1>
+      <p class="subtitle">วิเคราะห์แนวโน้มและเปรียบเทียบข้อมูลระหว่าง 2 ปี</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-bar mb-xl">
+      <div class="flex-gap">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label text-center">เทศกาล</label>
+          <select class="form-control" id="compareFestival">
+            <option value="songkran">🎉 สงกรานต์</option>
+            <option value="newyear">🎄 ปีใหม่</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label text-center">ปีปัจจุบัน</label>
+          <select class="form-control" id="compareYear1"></select>
+        </div>
+        <span class="text-muted" style="font-size:1.2rem;padding-top:20px">⚡ VS ⚡</span>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label text-center">ปีก่อนหน้า</label>
+          <select class="form-control" id="compareYear2"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison Content -->
+    <div id="compareContent">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+
+  </div>
+
+  <!-- Print Button -->
+  <button class="btn-print" onclick="window.print()" title="พิมพ์รายงาน">🖨️</button>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/compare.js"></script>
+
+</body>
+</html>
