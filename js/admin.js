@@ -198,6 +198,7 @@ function renderDailyAdminTable(data) {
       <td>${row.injuries}</td>
       <td>${row.deaths}</td>
       <td>
+        <button class="btn btn-sm btn-outline" onclick="editDailyRow('${row.date}')">✏️</button>
         <button class="btn btn-sm btn-danger" onclick="deleteDailyRow('${row.date}')">🗑️</button>
       </td>
     </tr>
@@ -248,6 +249,24 @@ async function deleteDailyRow(date) {
   }
 }
 
+async function editDailyRow(date) {
+  try {
+    const result = await fetchDailyStats(adminYear, adminFestival);
+    if (result.success) {
+      const record = result.data.find(r => r.date === date);
+      if (record) {
+        document.getElementById('dailyDate').value = record.date;
+        document.getElementById('dailyAccidents').value = record.accidents || 0;
+        document.getElementById('dailyInjuries').value = record.injuries || 0;
+        document.getElementById('dailyDeaths').value = record.deaths || 0;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  } catch {
+    showToast('ไม่สามารถโหลดข้อมูล', 'error');
+  }
+}
+
 // ==================== District Stats Admin ====================
 
 async function loadDistrictAdmin() {
@@ -287,6 +306,7 @@ function renderDistrictAdminTable(data) {
       <td>${row.injuries}</td>
       <td>${row.deaths}</td>
       <td>
+        <button class="btn btn-sm btn-outline" onclick="editDistrictRow('${row.date}', '${row.district}')">✏️</button>
         <button class="btn btn-sm btn-danger"
                 onclick="deleteDistrictRow('${row.date}','${row.district}')">🗑️</button>
       </td>
@@ -344,6 +364,25 @@ async function deleteDistrictRow(date, district) {
   }
 }
 
+async function editDistrictRow(date, district) {
+  try {
+    const result = await fetchDistrictStats(adminYear, adminFestival);
+    if (result.success && result.raw) {
+      const record = result.raw.find(r => r.date === date && r.district === district);
+      if (record) {
+        document.getElementById('districtDate').value = record.date;
+        document.getElementById('districtName').value = record.district;
+        document.getElementById('districtAccidents').value = record.accidents || 0;
+        document.getElementById('districtInjuries').value = record.injuries || 0;
+        document.getElementById('districtDeaths').value = record.deaths || 0;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  } catch {
+    showToast('ไม่สามารถโหลดข้อมูล', 'error');
+  }
+}
+
 // ==================== Policy Stats Admin ====================
 
 async function loadPolicyAdmin() {
@@ -371,7 +410,9 @@ function renderPolicyAdminTable(data) {
       <td>${row.noSeatbelt}</td>
       <td>${row.noHelmet}</td>
       <td>${row.speeding}</td>
-      <td>-</td>
+      <td>
+        <button class="btn btn-sm btn-outline" onclick="editPolicyRow('${row.date}')">✏️</button>
+      </td>
     </tr>
   `).join('');
 }
@@ -403,6 +444,25 @@ async function savePolicyForm(e) {
     }
   } catch (error) {
     showToast('ไม่สามารถบันทึกข้อมูล', 'error');
+  }
+}
+
+async function editPolicyRow(date) {
+  try {
+    const result = await fetchPolicyStats(adminYear, adminFestival);
+    if (result.success && result.data && result.data.daily) {
+      const record = result.data.daily.find(r => r.date === date);
+      if (record) {
+        document.getElementById('policyDate').value = record.date;
+        document.getElementById('policyDrunk').value = record.drunkDriving || 0;
+        document.getElementById('policySeatbelt').value = record.noSeatbelt || 0;
+        document.getElementById('policyHelmet').value = record.noHelmet || 0;
+        document.getElementById('policySpeed').value = record.speeding || 0;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  } catch {
+    showToast('ไม่สามารถโหลดข้อมูล', 'error');
   }
 }
 
