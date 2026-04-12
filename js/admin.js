@@ -551,6 +551,9 @@ function showCasualtyForm(editData = null) {
     document.getElementById('casualtyGender').value = editData.gender || '';
     document.getElementById('casualtyAge').value = editData.age || '';
     document.getElementById('casualtyStatus').value = editData.status || '';
+    document.getElementById('casualtyRoadType').value = editData.roadType || '';
+    document.getElementById('casualtyRole').value = editData.role || '';
+    document.getElementById('casualtySpotType').value = editData.spotType || '';
     document.getElementById('casualtyNotes').value = editData.notes || '';
   } else {
     document.getElementById('casualtyForm').reset();
@@ -583,6 +586,9 @@ async function saveCasualtyForm(e) {
     gender: document.getElementById('casualtyGender').value,
     age: document.getElementById('casualtyAge').value,
     status: document.getElementById('casualtyStatus').value,
+    roadType: document.getElementById('casualtyRoadType').value,
+    role: document.getElementById('casualtyRole').value,
+    spotType: document.getElementById('casualtySpotType').value,
     notes: document.getElementById('casualtyNotes').value
   };
 

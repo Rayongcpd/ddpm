@@ -331,6 +331,41 @@
             </div>
           </div>
 
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">ประเภทถนน</label>
+              <select class="form-control" id="casualtyRoadType">
+                <option value="">เลือก</option>
+                <option value="ทางหลวงแผ่นดิน">🛤️ ทางหลวงแผ่นดิน</option>
+                <option value="ทางหลวงชนบท">🛣️ ทางหลวงชนบท</option>
+                <option value="ถนนนในเมือง/เทศบาล">🏙️ ถนนนในเมือง/เทศบาล</option>
+                <option value="ถนนในหมู่บ้าน/อบต.">🏠 ถนนในหมู่บ้าน/อบต.</option>
+                <option value="อื่นๆ">📦 อื่นๆ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">สถานะผู้ประสบเหตุ</label>
+              <select class="form-control" id="casualtyRole">
+                <option value="">เลือก</option>
+                <option value="ผู้ขับขี่">🛵 ผู้ขับขี่</option>
+                <option value="ผู้โดยสาร">👥 ผู้โดยสาร</option>
+                <option value="คนเดินเท้า">🚶 คนเดินเท้า</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ลักษณะจุดเกิดเหตุ</label>
+              <select class="form-control" id="casualtySpotType">
+                <option value="">เลือก</option>
+                <option value="ทางตรง">➖ ทางตรง</option>
+                <option value="ทางโค้ง">↪️ ทางโค้ง</option>
+                <option value="สี่แยก">➕ สี่แยก</option>
+                <option value="สามแยก">⏳ สามแยก</option>
+                <option value="จุดกลับรถ">🔄 จุดกลับรถ</option>
+                <option value="อื่นๆ">📍 อื่นๆ</option>
+              </select>
+            </div>
+          </div>
+
           <div class="form-group">
             <label class="form-label">ชื่อ-สกุล ผู้บาดเจ็บ/เสียชีวิต</label>
             <input type="text" class="form-control" id="casualtyName" required placeholder="ชื่อ-นามสกุล">

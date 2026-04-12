@@ -10,6 +10,9 @@ let allCasualties = [];
 let casualtyChartGender = null;
 let casualtyChartVehicle = null;
 let casualtyChartCause = null;
+let casualtyChartAge = null;
+let casualtyChartRoad = null;
+let casualtyChartRole = null;
 
 // ========== Initialize ==========
 document.addEventListener('DOMContentLoaded', () => {
@@ -152,24 +155,46 @@ function renderDetailPage() {
       </div>
     </div>
 
-    <!-- Charts -->
+    <!-- Charts Row 1 -->
     <div class="grid-3 mb-xl">
       <div class="card">
         <h3 class="section-title">👤 แยกตามเพศ</h3>
-        <div class="chart-container" style="min-height:250px">
+        <div class="chart-container" style="min-height:220px">
           <canvas id="chartGender"></canvas>
         </div>
       </div>
       <div class="card">
         <h3 class="section-title">🚗 แยกตามยานพาหนะ</h3>
-        <div class="chart-container" style="min-height:250px">
+        <div class="chart-container" style="min-height:220px">
           <canvas id="chartVehicle"></canvas>
         </div>
       </div>
       <div class="card">
         <h3 class="section-title">⚠️ แยกตามสาเหตุ</h3>
-        <div class="chart-container" style="min-height:250px">
+        <div class="chart-container" style="min-height:220px">
           <canvas id="chartCause"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 (Analytical) -->
+    <div class="grid-3 mb-xl">
+      <div class="card">
+        <h3 class="section-title">🎂 แยกตามกลุ่มอายุ</h3>
+        <div class="chart-container" style="min-height:220px">
+          <canvas id="chartAge"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="section-title">🛣️ แยกตามประเภทถนน</h3>
+        <div class="chart-container" style="min-height:220px">
+          <canvas id="chartRoadType"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="section-title">👥 แยกตามสถานะผู้ประสบเหตุ</h3>
+        <div class="chart-container" style="min-height:220px">
+          <canvas id="chartRole"></canvas>
         </div>
       </div>
     </div>
@@ -271,6 +296,58 @@ function renderStatCharts(data) {
       }
     });
   }
+
+  // Age group chart
+  if (casualtyChartAge) casualtyChartAge.destroy();
+  const ctxAge = document.getElementById('chartAge');
+  if (ctxAge) {
+    const ageGroups = { 'เยาวชน (<20)': 0, 'วัยทำงาน (20-60)': 0, 'ผู้สูงอายุ (>60)': 0, 'ไม่ระบุ': 0 };
+    data.forEach(r => {
+      const age = parseInt(r.age);
+      if (isNaN(age)) ageGroups['ไม่ระบุ']++;
+      else if (age < 20) ageGroups['เยาวชน (<20)']++;
+      else if (age <= 60) ageGroups['วัยทำงาน (20-60)']++;
+      else ageGroups['ผู้สูงอายุ (>60)']++;
+    });
+    casualtyChartAge = new Chart(ctxAge, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(ageGroups),
+        datasets: [{ data: Object.values(ageGroups), backgroundColor: ['#69f0ae', '#4f7cff', '#ffd740', '#9fa8da'], borderWidth: 0 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: '#9fa8da', font: { family: 'Prompt', size: 10 } } } } }
+    });
+  }
+
+  // Road type chart
+  if (casualtyChartRoad) casualtyChartRoad.destroy();
+  const ctxRoad = document.getElementById('chartRoadType');
+  if (ctxRoad) {
+    const roadCounts = countBy(data, 'roadType');
+    casualtyChartRoad = new Chart(ctxRoad, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(roadCounts),
+        datasets: [{ data: Object.values(roadCounts), backgroundColor: ['#ff9800', '#2196f3', '#4caf50', '#f44336', '#9c27b0'], borderWidth: 0 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: '#9fa8da', font: { family: 'Prompt', size: 10 } } } } }
+    });
+  }
+
+  // Victim role chart
+  if (casualtyChartRole) casualtyChartRole.destroy();
+  const ctxRole = document.getElementById('chartRole');
+  if (ctxRole) {
+    const roleCounts = countBy(data, 'role');
+    casualtyChartRole = new Chart(ctxRole, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(roleCounts),
+        datasets: [{ data: Object.values(roleCounts), backgroundColor: ['#e91e63', '#00bcd4', '#ffeb3b', '#4caf50'], borderWidth: 0 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { color: '#9fa8da', font: { family: 'Prompt', size: 10 } } } } }
+    });
+  }
 }
 
 /**
@@ -311,6 +388,9 @@ function renderTimeline(data) {
               📍 อ.${item.district || '-'} |
               🚗 ${item.vehicleType || '-'} |
               ⚠️ ${item.cause || '-'}
+            </div>
+            <div class="font-sm text-secondary mt-sm">
+              🛣️ ${item.roadType || 'ไม่ระบุประเภทถนน'} | 👥 ${item.role || 'ไม่ระบุสถานะ'} | 📍 ${item.spotType || 'ไม่ระบุจุดเกิดเหตุ'}
             </div>
             ${item.location ? `<div class="font-sm text-muted mt-sm">📍 ${item.location}</div>` : ''}
             ${item.notes ? `<div class="font-sm text-muted mt-sm">📝 ${item.notes}</div>` : ''}
@@ -365,6 +445,12 @@ function renderCaseCards(data) {
 
           <span class="detail-label">สาเหตุ</span>
           <span class="detail-value">${item.cause || '-'}</span>
+
+          <span class="detail-label">ประเภทถนน/จุดเกิดเหตุ</span>
+          <span class="detail-value">${item.roadType || '-'} (${item.spotType || '-'})</span>
+
+          <span class="detail-label">สถานะผู้ประสบเหตุ</span>
+          <span class="detail-value">${item.role || '-'}</span>
 
           ${item.notes ? `
             <span class="detail-label">หมายเหตุ</span>

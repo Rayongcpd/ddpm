@@ -98,6 +98,10 @@ function renderComparison(data) {
       ${renderCompareCard('🚗 อุบัติเหตุ', year1.totals.accidents, year2.totals.accidents, year1.year, year2.year, 'accidents')}
       ${renderCompareCard('🏥 บาดเจ็บ', year1.totals.injuries, year2.totals.injuries, year1.year, year2.year, 'injuries')}
       ${renderCompareCard('✝️ เสียชีวิต', year1.totals.deaths, year2.totals.deaths, year1.year, year2.year, 'deaths')}
+      ${renderCompareCard('🎯 ดัชนีความรุนแรง (%)', 
+        year1.totals.accidents > 0 ? (year1.totals.deaths / year1.totals.accidents * 100).toFixed(1) : 0, 
+        year2.totals.accidents > 0 ? (year2.totals.deaths / year2.totals.accidents * 100).toFixed(1) : 0, 
+        year1.year, year2.year, 'safe')}
     </div>
 
     <!-- Daily Comparison Chart -->

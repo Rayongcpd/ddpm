@@ -9,6 +9,8 @@ let currentFestival = 'songkran';
 let dashboardData = null;
 let trendChart = null;
 let districtChart = null;
+let hourlyChart = null;
+let cumulativeChart = null;
 
 // ========== Initialize ==========
 document.addEventListener('DOMContentLoaded', async () => {
@@ -155,6 +157,33 @@ function renderDashboard() {
           วันนี้ <span>${formatNumber(todayDeaths)}</span> ราย | สะสม <span>${formatNumber(totalDeaths)}</span> ราย
         </div>
       </div>
+
+      <div class="card summary-card safe">
+        <div class="card-header">
+          <span class="card-title">ดัชนีความรุนแรง</span>
+          <div class="card-icon safe">🎯</div>
+        </div>
+        <div class="summary-value safe">${totalAccidents > 0 ? ((totalDeaths / totalAccidents) * 100).toFixed(1) : 0}%</div>
+        <div class="summary-sub">
+          อัตราการตายต่ออุบัติเหตุ <span>${totalAccidents}</span> ครั้ง
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Mid Section -->
+    <div class="grid-2 mb-xl">
+      <div class="card">
+        <h3 class="section-title">🕐 วิเคราะห์ช่วงเวลาเกิดเหตุ (สะสม)</h3>
+        <div class="chart-container" style="min-height:280px">
+          <canvas id="hourlyChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="section-title">📊 เปรียบเทียบยอดสะสมรายวัน</h3>
+        <div class="chart-container" style="min-height:280px">
+          <canvas id="cumulativeChart"></canvas>
+        </div>
+      </div>
     </div>
 
     <!-- Daily Table + Trend Chart -->
@@ -198,6 +227,8 @@ function renderDashboard() {
   // Render sub-components
   renderDailyTable(daily);
   renderTrendChart(daily);
+  renderHourlyChart(casualties);
+  renderCumulativeChart(daily);
   renderDistrictCards(districts, 'name');
   initDistrictSorting(districts);
   renderPolicyCards(policy);
@@ -490,3 +521,96 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+/**
+ * Render hourly frequency chart
+ */
+function renderHourlyChart(casualties) {
+  if (hourlyChart) hourlyChart.destroy();
+  const ctx = document.getElementById('hourlyChart');
+  if (!ctx || !casualties) return;
+
+  // Group by 2-hour slots
+  const slots = ['00-02', '02-04', '04-06', '06-08', '08-10', '10-12', 
+                 '12-14', '14-16', '16-18', '18-20', '20-22', '22-00'];
+  const counts = new Array(slots.length).fill(0);
+
+  casualties.forEach(c => {
+    if (c.time) {
+      const hour = parseInt(c.time.split(':')[0]);
+      const slotIdx = Math.floor(hour / 2);
+      if (slotIdx >= 0 && slotIdx < slots.length) counts[slotIdx]++;
+    }
+  });
+
+  hourlyChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: slots.map(s => s + ' น.'),
+      datasets: [{
+        label: 'จำนวนเคส',
+        data: counts,
+        backgroundColor: 'rgba(79,124,255,0.7)',
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#9fa8da', font: { family: 'Prompt', size: 10 } }, grid: { display: false } },
+        y: { beginAtZero: true, ticks: { color: '#5c6bc0', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+/**
+ * Render cumulative trend chart
+ */
+function renderCumulativeChart(daily) {
+  if (cumulativeChart) cumulativeChart.destroy();
+  const ctx = document.getElementById('cumulativeChart');
+  if (!ctx || !daily || daily.length === 0) return;
+
+  let accTotal = 0;
+  let deathTotal = 0;
+  const accCumu = daily.map(r => { accTotal += Number(r.accidents) || 0; return accTotal; });
+  const deathCumu = daily.map(r => { deathTotal += Number(r.deaths) || 0; return deathTotal; });
+
+  cumulativeChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: daily.map(r => formatDateShort(r.date)),
+      datasets: [
+        {
+          label: 'สะสมอุบัติเหตุ',
+          data: accCumu,
+          borderColor: '#4f7cff',
+          backgroundColor: 'transparent',
+          pointRadius: 4,
+          tension: 0.1
+        },
+        {
+          label: 'สะสมเสียชีวิต',
+          data: deathCumu,
+          borderColor: '#ff5252',
+          backgroundColor: 'transparent',
+          pointRadius: 4,
+          tension: 0.1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { color: '#9fa8da', font: { family: 'Prompt' } } } },
+      scales: {
+        x: { ticks: { color: '#5c6bc0', font: { family: 'Prompt' } }, grid: { display: false } },
+        y: { beginAtZero: true, ticks: { color: '#5c6bc0' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
