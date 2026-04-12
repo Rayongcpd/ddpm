@@ -1394,3 +1394,8 @@ textarea.form-control {
 .w-100 { width: 100%; }
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }
+
+/* ===== Secret Admin Logic ===== */
+#nav-admin { 
+  display: none !important; 
+}

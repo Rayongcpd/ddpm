@@ -440,3 +440,50 @@ function renderPolicyCards(policy) {
 function printReport() {
   window.print();
 }
+
+/**
+ * Secret Admin Login Triggers
+ * - วิธีที่ 1: พิมพ์คำว่า "admin" ที่คีย์บอร์ด (สำหรับคอมพิวเตอร์)
+ * - วิธีที่ 2: กดคลิกที่โลโก้ 🚦 5 ครั้งติดกัน (สำหรับมือถือ)
+ */
+
+// 1. Keyboard trigger
+let secretKeys = '';
+document.addEventListener('keydown', (e) => {
+  secretKeys += e.key.toLowerCase();
+  if (secretKeys.length > 10) {
+    secretKeys = secretKeys.slice(-10);
+  }
+  if (secretKeys.includes('admin')) {
+    window.location.href = 'admin.html';
+  }
+});
+
+// 2. Click trigger (Mobile support)
+document.addEventListener('DOMContentLoaded', () => {
+  let logoClickCount = 0;
+  let logoClickTimer = null;
+  
+  // แนบ Event ไปที่ไอคอน 🚦 (ส่วนใหญ่จะมีคลาส .emoji อยู่ใน .navbar-brand)
+  const logoEmoji = document.querySelector('.navbar-brand .emoji') || document.querySelector('.navbar-brand');
+  
+  if (logoEmoji) {
+    logoEmoji.addEventListener('click', (e) => {
+      // ถ้าเป็นลิงก์ ไม่ต้องหยุด default ก็ได้ เผื่อ user กดทีเดียวจะได้ไปหน้าแรกปกติ
+      // แต่เรานับเผื่อไว้
+      
+      logoClickCount++;
+      if (logoClickTimer) clearTimeout(logoClickTimer);
+      
+      if (logoClickCount >= 5) {
+        e.preventDefault(); // กันเด้งไปหน้าแรกถ้าคลิกถึง 5
+        window.location.href = 'admin.html';
+      } else {
+        // จำกัดเวลาคลิกให้ต่อเนื่องภายใน 2 วินาที
+        logoClickTimer = setTimeout(() => {
+          logoClickCount = 0;
+        }, 2000); 
+      }
+    });
+  }
+});
