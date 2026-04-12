@@ -79,6 +79,36 @@
   --font-primary: 'Inter', 'Prompt', sans-serif;
 }
 
+/* Dark Theme Variables */
+[data-theme="dark"] {
+  --bg-primary: #0b1120;
+  --bg-secondary: #0f172a;
+  --bg-tertiary: #1e293b;
+
+  /* Surfaces & Borders */
+  --glass-bg: #0f172a;
+  --glass-bg-hover: #1e293b;
+  --glass-border: #1e293b;
+  --glass-border-hover: #334155;
+
+  /* Text */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dark: #f8fafc;
+
+  /* Accent Adjustments (Optional, keeping Stripe colors for brand consistency) */
+  --gradient-header: #0f172a;
+  
+  /* Reset background skew overlay for dark mode to be more subtle */
+  --bg-skew-gradient: linear-gradient(150deg, #0f172a 15%, #0b1120 70%, #0f172a 94%);
+
+  /* Shadows */
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
 /* ===== Reset & Base ===== */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -108,7 +138,7 @@ body::before {
   left: 0;
   right: 0;
   height: 40vh;
-  background: linear-gradient(150deg, #f0f4f8 15%, #ffffff 70%, #f6f9fc 94%);
+  background: var(--bg-skew-gradient, linear-gradient(150deg, #f0f4f8 15%, #ffffff 70%, #f6f9fc 94%));
   transform: skewY(-6deg);
   transform-origin: top left;
   pointer-events: none;
@@ -1152,31 +1182,48 @@ textarea.form-control {
   margin-left: var(--space-md);
 }
 
-/* ===== Print Button ===== */
-.btn-print {
-  position: fixed;
-  bottom: var(--space-xl);
-  right: var(--space-xl);
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--gradient-primary);
-  color: white;
-  border: none;
-  font-size: 1.3rem;
+/* ===== Theme Toggle ===== */
+.theme-toggle {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
   cursor: pointer;
-  box-shadow: var(--shadow-lg), var(--shadow-glow-blue);
-  transition: var(--transition-normal);
-  z-index: 50;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-xl);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-sm);
+  transition: var(--transition-normal);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-left: var(--space-md);
 }
 
-.btn-print:hover {
-  transform: scale(1.1);
-  box-shadow: var(--shadow-lg), 0 0 40px rgba(79, 124, 255, 0.4);
+.theme-toggle:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-1px);
 }
+
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+[data-theme="dark"] .navbar {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+[data-theme="dark"] thead th {
+  background: #1e293b;
+}
+
+[data-theme="dark"] .table-total td {
+  background: #1e293b !important;
+}
+
 
 /* ===== Animations ===== */
 @keyframes fadeIn {
@@ -1255,13 +1302,6 @@ textarea.form-control {
     grid-template-columns: repeat(2, 1fr); 
     gap: var(--space-md); 
   }
-
-  .btn-print {
-    bottom: var(--space-md);
-    right: var(--space-md);
-    width: 48px;
-    height: 48px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -1321,7 +1361,7 @@ textarea.form-control {
 
   body::before { display: none; }
 
-  .navbar, .controls-bar, .btn-print, .toast-container,
+  .navbar, .controls-bar, .toast-container,
   .btn, button, .tabs { display: none !important; }
 
   .card {
@@ -1409,7 +1449,7 @@ textarea.form-control {
 }
 
 /* บังคับใช้ Font Emoji เพื่อให้แสดงสมบูรณ์ทุก OS และแก้ Line Height ที่ทำให้ไอคอนโดนตัด */
-.card-icon, .btn-print, .emoji, .festival-badge, .navbar-brand .emoji {
+.card-icon, .emoji, .festival-badge, .navbar-brand .emoji {
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif !important;
   line-height: 1 !important;
 }

@@ -16,6 +16,7 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/theme.js"></script>
 </head>
 <body>
 
@@ -31,6 +32,12 @@
         <li><a href="detail.html" id="nav-detail">📋 รายละเอียด</a></li>
         <li><a href="compare.html" class="active" id="nav-compare">📈 เปรียบเทียบ</a></li>
         <li><a href="admin.html" id="nav-admin">🔑 Admin</a></li>
+        <li>
+          <button class="theme-toggle" id="themeToggle" title="สลับโหมดสี">
+            <span class="icon-sun">☀️</span>
+            <span class="icon-moon">🌙</span>
+          </button>
+        </li>
       </ul>
     </div>
   </nav>
@@ -72,8 +79,6 @@
 
   </div>
 
-  <!-- Print Button -->
-  <button class="btn-print" onclick="window.print()" title="พิมพ์รายงาน">🖨️</button>
 
   <!-- Scripts -->
   <script src="js/api.js"></script>

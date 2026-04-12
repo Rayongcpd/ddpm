@@ -434,12 +434,6 @@ function renderPolicyCards(policy) {
   `).join('');
 }
 
-/**
- * Print report
- */
-function printReport() {
-  window.print();
-}
 
 /**
  * Secret Admin Login Triggers
