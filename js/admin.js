@@ -403,18 +403,23 @@ async function loadPolicyAdmin() {
 
 function renderPolicyAdminTable(data) {
   const tableBody = document.getElementById('policyTableBody');
-  tableBody.innerHTML = data.map(row => `
-    <tr>
-      <td>${formatDate(row.date)}</td>
-      <td>${row.drunkDriving}</td>
-      <td>${row.noSeatbelt}</td>
-      <td>${row.noHelmet}</td>
-      <td>${row.speeding}</td>
-      <td>
-        <button class="btn btn-sm btn-outline" onclick="editPolicyRow('${row.date}')">✏️</button>
-      </td>
-    </tr>
-  `).join('');
+  tableBody.innerHTML = data.map(row => {
+    const total = 
+      (Number(row.speeding) || 0) + (Number(row.wrongSide) || 0) + (Number(row.redLight) || 0) +
+      (Number(row.noSeatbelt) || 0) + (Number(row.noLicense) || 0) + (Number(row.dangerousOvertaking) || 0) +
+      (Number(row.drunkDriving) || 0) + (Number(row.noHelmet) || 0) + (Number(row.unsafeVehicle) || 0) +
+      (Number(row.mobilePhone) || 0);
+
+    return `
+      <tr>
+        <td>${formatDate(row.date)}</td>
+        <td><span class="stat-number">${formatNumber(total)}</span></td>
+        <td>
+          <button class="btn btn-sm btn-outline" onclick="editPolicyRow('${row.date}')">✏️</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 async function savePolicyForm(e) {
@@ -426,10 +431,16 @@ async function savePolicyForm(e) {
     year: adminYear,
     festival: adminFestival,
     date: document.getElementById('policyDate').value,
-    drunkDriving: document.getElementById('policyDrunk').value || 0,
+    speeding: document.getElementById('policySpeed').value || 0,
+    wrongSide: document.getElementById('policyWrongSide').value || 0,
+    redLight: document.getElementById('policyRedLight').value || 0,
     noSeatbelt: document.getElementById('policySeatbelt').value || 0,
+    noLicense: document.getElementById('policyNoLicense').value || 0,
+    dangerousOvertaking: document.getElementById('policyOvertaking').value || 0,
+    drunkDriving: document.getElementById('policyDrunk').value || 0,
     noHelmet: document.getElementById('policyHelmet').value || 0,
-    speeding: document.getElementById('policySpeed').value || 0
+    unsafeVehicle: document.getElementById('policyUnsafe').value || 0,
+    mobilePhone: document.getElementById('policyMobile').value || 0
   };
 
   if (!payload.date) { showToast('กรุณาเลือกวันที่', 'warning'); return; }
@@ -454,10 +465,16 @@ async function editPolicyRow(date) {
       const record = result.data.daily.find(r => r.date === date);
       if (record) {
         document.getElementById('policyDate').value = record.date;
-        document.getElementById('policyDrunk').value = record.drunkDriving || 0;
-        document.getElementById('policySeatbelt').value = record.noSeatbelt || 0;
-        document.getElementById('policyHelmet').value = record.noHelmet || 0;
         document.getElementById('policySpeed').value = record.speeding || 0;
+        document.getElementById('policyWrongSide').value = record.wrongSide || 0;
+        document.getElementById('policyRedLight').value = record.redLight || 0;
+        document.getElementById('policySeatbelt').value = record.noSeatbelt || 0;
+        document.getElementById('policyNoLicense').value = record.noLicense || 0;
+        document.getElementById('policyOvertaking').value = record.dangerousOvertaking || 0;
+        document.getElementById('policyDrunk').value = record.drunkDriving || 0;
+        document.getElementById('policyHelmet').value = record.noHelmet || 0;
+        document.getElementById('policyUnsafe').value = record.unsafeVehicle || 0;
+        document.getElementById('policyMobile').value = record.mobilePhone || 0;
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }

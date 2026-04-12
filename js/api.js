@@ -41,6 +41,20 @@ const DISTRICTS = [
   'บ้านด่านลานหอย'
 ];
 
+// ========== Policy Definitions (10 รสขม) ==========
+const POLICY_DEFS = [
+  { key: 'speeding', label: 'ขับรถเร็วเกินกำหนด', emoji: '🏎️', color: 'var(--accent-purple)', bg: 'rgba(179,136,255,0.12)' },
+  { key: 'wrongSide', label: 'ขับรถย้อนศร', emoji: '↩️', color: '#ff7043', bg: 'rgba(255,112,67,0.12)' },
+  { key: 'redLight', label: 'ฝ่าไฟแดง', emoji: '🚥', color: '#ef5350', bg: 'rgba(239,83,80,0.12)' },
+  { key: 'noSeatbelt', label: 'ไม่คาดเข็มขัด', emoji: '🚫', color: 'var(--accent-orange)', bg: 'rgba(255,152,0,0.12)' },
+  { key: 'noLicense', label: 'ไม่มีใบขับขี่', emoji: '🆔', color: '#42a5f5', bg: 'rgba(66,165,245,0.12)' },
+  { key: 'dangerousOvertaking', label: 'แซงในที่คับขัน', emoji: '⚠️', color: '#ffa726', bg: 'rgba(255,167,38,0.12)' },
+  { key: 'drunkDriving', label: 'เมาสุรา', emoji: '🍺', color: 'var(--accent-red)', bg: 'rgba(255,82,82,0.12)' },
+  { key: 'noHelmet', label: 'ไม่สวมหมวกนิรภัย', emoji: '⛑️', color: 'var(--accent-gold)', bg: 'rgba(255,215,64,0.12)' },
+  { key: 'unsafeVehicle', label: 'รถไม่ปลอดภัย', emoji: '🛠️', color: '#78909c', bg: 'rgba(120,144,156,0.12)' },
+  { key: 'mobilePhone', label: 'ใช้โทรศัพท์มืิอถือ', emoji: '📱', color: '#26a69a', bg: 'rgba(38,166,154,0.12)' }
+];
+
 // ========== API Functions ==========
 
 /**

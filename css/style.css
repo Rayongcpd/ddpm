@@ -586,29 +586,37 @@ td.text-warning { color: var(--accent-gold); font-weight: 600; }
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-md);
+  transition: var(--transition-normal);
+}
+
+.policy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: var(--glass-bg-hover);
 }
 
 .policy-card .policy-icon {
   width: 48px;
   height: 48px;
-  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  flex-shrink: 0;
+  border-radius: var(--radius-md);
 }
 
 .policy-card .policy-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-primary);
+  line-height: 1;
 }
 
 .policy-card .policy-label {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
+  font-weight: 500;
+  margin-top: 2px;
 }
 
 .policy-card .policy-unit {
@@ -991,13 +999,35 @@ textarea.form-control {
 
 /* ===== Stats Mini Cards ===== */
 .stat-mini {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 60px 30px 60px 80px;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
   padding: var(--space-sm) var(--space-md);
   background: var(--glass-bg);
   border-radius: var(--radius-sm);
   border: 1px solid var(--glass-border);
+  font-family: var(--font-primary);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-vs {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-weight: 600;
+}
+
+.stat-badge-wrap {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .stat-mini .stat-dot {
@@ -1013,9 +1043,9 @@ textarea.form-control {
 }
 
 .stat-mini .stat-number {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  margin-left: auto;
+  text-align: right;
 }
 
 /* ===== Filter Bar ===== */

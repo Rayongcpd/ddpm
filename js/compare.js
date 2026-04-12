@@ -311,9 +311,9 @@ function renderPolicyCompareChart(year1, year2) {
   const p1 = year1.policy || {};
   const p2 = year2.policy || {};
 
-  const labels = ['ดื่มแล้วขับ', 'ไม่คาดเข็มขัด', 'ไม่สวมหมวกฯ', 'ขับเร็วเกิน'];
-  const data1 = [p1.drunkDriving || 0, p1.noSeatbelt || 0, p1.noHelmet || 0, p1.speeding || 0];
-  const data2 = [p2.drunkDriving || 0, p2.noSeatbelt || 0, p2.noHelmet || 0, p2.speeding || 0];
+  const labels = POLICY_DEFS.map(d => d.label);
+  const data1 = POLICY_DEFS.map(d => p1[d.key] || 0);
+  const data2 = POLICY_DEFS.map(d => p2[d.key] || 0);
 
   comparePolicyChart = new Chart(ctx, {
     type: 'radar',
@@ -345,33 +345,31 @@ function renderPolicyCompareChart(year1, year2) {
       scales: {
         r: {
           beginAtZero: true,
-          ticks: { color: '#5c6bc0', backdropColor: 'transparent', font: { family: 'Prompt' } },
+          ticks: { color: '#5c6bc0', backdropColor: 'transparent', font: { family: 'Prompt', size: 10 } },
           grid: { color: 'rgba(255,255,255,0.1)' },
-          pointLabels: { color: '#9fa8da', font: { family: 'Prompt', size: 11 } }
+          pointLabels: { color: '#9fa8da', font: { family: 'Prompt', size: 10 } }
         }
       }
     }
   });
 
-  // Policy compare cards
+  // Policy compare list (Fixed Alignment)
   const cardsContainer = document.getElementById('policyCompareCards');
   if (cardsContainer) {
-    const items = [
-      { label: '🍺 ดื่มแล้วขับ', v1: data1[0], v2: data2[0] },
-      { label: '🚫 ไม่คาดเข็มขัด', v1: data1[1], v2: data2[1] },
-      { label: '⛑️ ไม่สวมหมวกฯ', v1: data1[2], v2: data2[2] },
-      { label: '🏎️ ขับเร็วเกิน', v1: data1[3], v2: data2[3] }
-    ];
-
-    cardsContainer.innerHTML = items.map(item => {
-      const change = calcChange(item.v1, item.v2);
+    cardsContainer.innerHTML = POLICY_DEFS.map(item => {
+      const v1 = p1[item.key] || 0;
+      const v2 = p2[item.key] || 0;
+      const change = calcChange(v1, v2);
+      
       return `
         <div class="stat-mini mb-md">
-          <span>${item.label}</span>
-          <span class="stat-number">${item.v1}</span>
-          <span class="text-muted">vs</span>
-          <span class="stat-number text-secondary">${item.v2}</span>
-          <span class="change-badge ${change.direction}">${change.pct}%</span>
+          <span class="stat-label">${item.emoji} ${item.label}</span>
+          <span class="stat-number">${formatNumber(v1)}</span>
+          <span class="stat-vs">vs</span>
+          <span class="stat-number text-secondary">${formatNumber(v2)}</span>
+          <div class="stat-badge-wrap">
+            <span class="change-badge ${change.direction}">${change.pct}%</span>
+          </div>
         </div>
       `;
     }).join('');

@@ -444,20 +444,13 @@ function renderPolicyCards(policy) {
   const container = document.getElementById('policyCards');
   if (!container) return;
 
-  const items = [
-    { icon: '🍺', label: 'ดื่มแล้วขับ', value: policy.drunkDriving || 0, color: 'var(--accent-red)', bg: 'rgba(255,82,82,0.12)' },
-    { icon: '🚫', label: 'ไม่คาดเข็มขัด', value: policy.noSeatbelt || 0, color: 'var(--accent-orange)', bg: 'rgba(255,152,0,0.12)' },
-    { icon: '⛑️', label: 'ไม่สวมหมวกนิรภัย', value: policy.noHelmet || 0, color: 'var(--accent-gold)', bg: 'rgba(255,215,64,0.12)' },
-    { icon: '🏎️', label: 'ขับรถเร็วเกินกำหนด', value: policy.speeding || 0, color: 'var(--accent-purple)', bg: 'rgba(179,136,255,0.12)' }
-  ];
-
-  container.innerHTML = items.map(item => `
+  container.innerHTML = POLICY_DEFS.map(item => `
     <div class="card policy-card">
       <div class="policy-icon" style="background:${item.bg}; color:${item.color}">
-        ${item.icon}
+        ${item.emoji}
       </div>
       <div>
-        <div class="policy-value" style="color:${item.color}">${formatNumber(item.value)}</div>
+        <div class="policy-value" style="color:${item.color}">${formatNumber(policy[item.key] || 0)}</div>
         <div class="policy-label">${item.label}</div>
         <div class="policy-unit">คน</div>
       </div>

@@ -203,29 +203,53 @@
         <div class="card mb-lg">
           <h3 class="section-title">➕ เพิ่ม/แก้ไขข้อมูลนโยบายเน้นหนัก</h3>
           <form onsubmit="savePolicyForm(event)">
-            <div class="form-inline">
-              <div class="form-group">
+            <div class="form-inline" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-md); align-items: end;">
+              <div class="form-group" style="grid-column: 1 / -1; margin-bottom: 0;">
                 <label class="form-label">วันที่</label>
                 <select class="form-control date-select" id="policyDate" required></select>
               </div>
               <div class="form-group">
-                <label class="form-label">🍺 ดื่มแล้วขับ</label>
-                <input type="number" class="form-control" id="policyDrunk" min="0" value="0">
+                <label class="form-label">🏎️ ขับรถเร็วเกินกำหนด</label>
+                <input type="number" class="form-control" id="policySpeed" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">↩️ ขับรถย้อนศร</label>
+                <input type="number" class="form-control" id="policyWrongSide" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">🚥 ฝ่าไฟแดง</label>
+                <input type="number" class="form-control" id="policyRedLight" min="0" value="0">
               </div>
               <div class="form-group">
                 <label class="form-label">🚫 ไม่คาดเข็มขัด</label>
                 <input type="number" class="form-control" id="policySeatbelt" min="0" value="0">
               </div>
               <div class="form-group">
-                <label class="form-label">⛑️ ไม่สวมหมวกฯ</label>
+                <label class="form-label">🆔 ไม่มีใบขับขี่</label>
+                <input type="number" class="form-control" id="policyNoLicense" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">⚠️ แซงในที่คับขัน</label>
+                <input type="number" class="form-control" id="policyOvertaking" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">🍺 เมาสุรา</label>
+                <input type="number" class="form-control" id="policyDrunk" min="0" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">⛑️ ไม่สวมหมวกนิรภัย</label>
                 <input type="number" class="form-control" id="policyHelmet" min="0" value="0">
               </div>
               <div class="form-group">
-                <label class="form-label">🏎️ ขับเร็วเกิน</label>
-                <input type="number" class="form-control" id="policySpeed" min="0" value="0">
+                <label class="form-label">🛠️ รถไม่ปลอดภัย</label>
+                <input type="number" class="form-control" id="policyUnsafe" min="0" value="0">
               </div>
               <div class="form-group">
-                <button type="submit" class="btn btn-primary">💾 บันทึก</button>
+                <label class="form-label">📱 ใช้โทรศัพท์มือถือ</label>
+                <input type="number" class="form-control" id="policyMobile" min="0" value="0">
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1; text-align: right;">
+                <button type="submit" class="btn btn-primary btn-lg" style="min-width: 150px;">💾 บันทึกข้อมูลนโยบาย</button>
               </div>
             </div>
           </form>
@@ -238,15 +262,12 @@
               <thead>
                 <tr>
                   <th>วันที่</th>
-                  <th>ดื่มแล้วขับ</th>
-                  <th>ไม่คาดเข็มขัด</th>
-                  <th>ไม่สวมหมวกฯ</th>
-                  <th>ขับเร็วเกิน</th>
+                  <th>รวม 10 ข้อหา</th>
                   <th>จัดการ</th>
                 </tr>
               </thead>
               <tbody id="policyTableBody">
-                <tr><td colspan="6" class="text-center text-muted p-lg">กำลังโหลด...</td></tr>
+                <tr><td colspan="3" class="text-center text-muted p-lg">กำลังโหลด...</td></tr>
               </tbody>
             </table>
           </div>
