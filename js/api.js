@@ -244,6 +244,14 @@ async function deleteDistrictData(payload, token) {
   return apiPost({ action: 'deleteDistrict', payload, token });
 }
 
+/**
+ * ลบข้อมูลนโยบาย
+ */
+async function deletePolicyData(payload, token) {
+  return apiPost({ action: 'deletePolicy', payload, token });
+}
+
+
 // ========== UTILITY ==========
 
 /**

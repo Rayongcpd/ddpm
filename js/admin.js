@@ -416,6 +416,7 @@ function renderPolicyAdminTable(data) {
         <td><span class="stat-number">${formatNumber(total)}</span></td>
         <td>
           <button class="btn btn-sm btn-outline" onclick="editPolicyRow('${row.date}')">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="deletePolicyRow('${row.date}')">🗑️</button>
         </td>
       </tr>
     `;
@@ -480,6 +481,23 @@ async function editPolicyRow(date) {
     }
   } catch {
     showToast('ไม่สามารถโหลดข้อมูล', 'error');
+  }
+}
+
+async function deletePolicyRow(date) {
+  if (!confirm('ต้องการลบข้อมูลนโยบายวันที่ ' + formatDate(date) + ' ?')) return;
+  const token = getAuthToken();
+
+  try {
+    const result = await deletePolicyData({ year: adminYear, festival: adminFestival, date }, token);
+    if (result.success) {
+      showToast(result.message, 'success');
+      loadPolicyAdmin();
+    } else {
+      showToast(result.error?.message || 'เกิดข้อผิดพลาด', 'error');
+    }
+  } catch (error) {
+    showToast('ไม่สามารถลบข้อมูล', 'error');
   }
 }
 
