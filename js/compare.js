@@ -353,20 +353,25 @@ function renderPolicyCompareChart(year1, year2) {
     }
   });
 
-  // Policy compare list (Fixed Alignment)
+  // Policy compare list (Fixed Alignment & Sorted)
   const cardsContainer = document.getElementById('policyCompareCards');
   if (cardsContainer) {
-    cardsContainer.innerHTML = POLICY_DEFS.map(item => {
-      const v1 = p1[item.key] || 0;
-      const v2 = p2[item.key] || 0;
-      const change = calcChange(v1, v2);
+    // Corrected sort:
+    const sortedItems = POLICY_DEFS.map(item => ({
+      ...item,
+      v1: p1[item.key] || 0,
+      v2: p2[item.key] || 0
+    })).sort((a, b) => b.v1 - a.v1);
+
+    cardsContainer.innerHTML = sortedItems.map(item => {
+      const change = calcChange(item.v1, item.v2);
       
       return `
         <div class="stat-mini mb-md">
           <span class="stat-label">${item.emoji} ${item.label}</span>
-          <span class="stat-number">${formatNumber(v1)}</span>
+          <span class="stat-number">${formatNumber(item.v1)}</span>
           <span class="stat-vs">vs</span>
-          <span class="stat-number text-secondary">${formatNumber(v2)}</span>
+          <span class="stat-number text-secondary">${formatNumber(item.v2)}</span>
           <div class="stat-badge-wrap">
             <span class="change-badge ${change.direction}">${change.pct}%</span>
           </div>

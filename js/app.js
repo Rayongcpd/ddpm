@@ -444,7 +444,14 @@ function renderPolicyCards(policy) {
   const container = document.getElementById('policyCards');
   if (!container) return;
 
-  container.innerHTML = POLICY_DEFS.map(item => `
+  // Sort by value descending
+  const sortedDefs = [...POLICY_DEFS].sort((a, b) => {
+    const valA = Number(policy[a.key]) || 0;
+    const valB = Number(policy[b.key]) || 0;
+    return valB - valA;
+  });
+
+  container.innerHTML = sortedDefs.map(item => `
     <div class="card policy-card">
       <div class="policy-icon" style="background:${item.bg}; color:${item.color}">
         ${item.emoji}
