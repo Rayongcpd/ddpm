@@ -469,20 +469,29 @@ document.addEventListener('DOMContentLoaded', () => {
   
   if (logoEmoji) {
     logoEmoji.addEventListener('click', (e) => {
-      // ถ้าเป็นลิงก์ ไม่ต้องหยุด default ก็ได้ เผื่อ user กดทีเดียวจะได้ไปหน้าแรกปกติ
-      // แต่เรานับเผื่อไว้
+      // ต้องหยุดการทำงานของล้ิงค์ <a> ก่อน ไม่เช่นนั้นจะโหลดหน้าใหม่ทันทีในคลิกแรก
+      e.preventDefault(); 
+      e.stopPropagation();
       
       logoClickCount++;
       if (logoClickTimer) clearTimeout(logoClickTimer);
       
       if (logoClickCount >= 5) {
-        e.preventDefault(); // กันเด้งไปหน้าแรกถ้าคลิกถึง 5
         window.location.href = 'admin.html';
       } else {
-        // จำกัดเวลาคลิกให้ต่อเนื่องภายใน 2 วินาที
+        // ให้ระยะเวลา 400ms ต่อการคลิก 1 ครั้ง เพื่อรอการคลิกต่อเนื่อง
         logoClickTimer = setTimeout(() => {
+          // ถ้าผู้ใช้หยุดคลิกแล้ว (เช่น คลิกแค่ 1 ครั้งตั้งใจจะกลับหน้าแรก) ให้ไปยังหน้าลิงก์ตามปกติ
+          if (logoClickCount < 5) {
+            const parentLink = logoEmoji.closest('a');
+            if(parentLink && parentLink.getAttribute('href')) {
+               window.location.href = parentLink.getAttribute('href');
+            } else {
+               window.location.href = 'index.html';
+            }
+          }
           logoClickCount = 0;
-        }, 2000); 
+        }, 400); 
       }
     });
   }

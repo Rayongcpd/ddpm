@@ -1399,3 +1399,23 @@ textarea.form-control {
 #nav-admin { 
   display: none !important; 
 }
+
+/* ===== Emoji & Icon Fixes ===== */
+/* แก้อาการ Emoji ขาดครึ่งเวลาใส่ Gradient Text */
+.page-header h1 {
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  color: var(--text-primary) !important;
+}
+
+/* บังคับใช้ Font Emoji เพื่อให้แสดงสมบูรณ์ทุก OS และแก้ Line Height ที่ทำให้ไอคอนโดนตัด */
+.card-icon, .btn-print, .emoji, .festival-badge, .navbar-brand .emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif !important;
+  line-height: 1 !important;
+}
+
+.card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
