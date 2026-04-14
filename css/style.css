@@ -1506,3 +1506,78 @@ textarea.form-control {
   align-items: center;
   justify-content: center;
 }
+
+/* ===== Policy Daily Table ===== */
+.policy-daily-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: var(--space-md);
+}
+
+.policy-daily-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-secondary);
+  font-size: 0.75rem;
+  padding: var(--space-sm);
+  border-bottom: 2px solid var(--glass-border);
+}
+
+.policy-daily-table td {
+  padding: var(--space-md) var(--space-sm);
+  text-align: center;
+  border-bottom: 1px solid var(--glass-border);
+  vertical-align: middle;
+}
+
+.policy-daily-table .policy-name {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-primary);
+  min-width: 180px;
+  background: var(--bg-secondary);
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+}
+
+.policy-daily-table .daily-cell {
+  min-width: 100px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.policy-daily-table .total-cell {
+  background: rgba(99, 91, 255, 0.03);
+  font-weight: 700;
+  min-width: 110px;
+}
+
+.cell-vals {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.cell-vals .v1 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+.cell-vals .v2 { font-size: 0.9rem; color: var(--text-muted); }
+.cell-vals .vs { font-size: 0.7rem; color: var(--text-muted); opacity: 0.5; }
+.cell-vals .v1.strong { color: var(--accent-blue); }
+
+.change-badge.mini {
+  padding: 1px 6px;
+  font-size: 0.7rem;
+}
+
+[data-theme='dark'] .policy-daily-table .policy-name,
+[data-theme='dark'] .policy-daily-table thead th {
+  background: var(--bg-secondary);
+}
+
+[data-theme='dark'] .policy-daily-table .daily-cell {
+  background: rgba(255, 255, 255, 0.01);
+}

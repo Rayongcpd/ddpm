@@ -120,19 +120,23 @@ function renderComparison(data) {
 
     <!-- Policy Comparison -->
     <div class="card mb-xl">
-      <h3 class="section-title">⚠️ เปรียบเทียบนโยบายเน้นหนัก</h3>
+      <h3 class="section-title">⚠️ เปรียบเทียบนโยบายเน้นหนัก (ภาพรวม)</h3>
       <div class="grid-2">
         <div class="chart-container" style="min-height:300px">
           <canvas id="comparePolicyChart"></canvas>
         </div>
         <div id="policyCompareCards"></div>
       </div>
+      
+      <h3 class="section-title mt-xl">📅 เปรียบเทียบนโยบายรายวัน (10 รสขม)</h3>
+      <div class="table-wrapper" id="policyDailyTable"></div>
     </div>
   `;
 
   renderCompareBarChart(year1, year2);
   renderDistrictCompareTable(year1, year2);
   renderPolicyCompareChart(year1, year2);
+  renderPolicyDailyTable(year1, year2);
 }
 
 /**
@@ -391,4 +395,84 @@ function renderPolicyCompareChart(year1, year2) {
       `;
     }).join('');
   }
+}
+
+/**
+ * Render policy daily comparison table
+ */
+function renderPolicyDailyTable(year1, year2) {
+  const container = document.getElementById('policyDailyTable');
+  if (!container) return;
+
+  const fest = FESTIVALS[compareFestival];
+  const daily1 = year1.policy.daily || [];
+  const daily2 = year2.policy.daily || [];
+
+  // Map data by [datePart (MM-DD)][policyKey]
+  const map1 = {};
+  const map2 = {};
+  daily1.forEach(r => { 
+    const dStr = String(r.date);
+    const dayPart = dStr.includes('-') ? dStr.slice(-5) : dStr;
+    map1[dayPart] = r; 
+  });
+  daily2.forEach(r => { 
+    const dStr = String(r.date);
+    const dayPart = dStr.includes('-') ? dStr.slice(-5) : dStr;
+    map2[dayPart] = r; 
+  });
+
+  let html = `
+    <table class="policy-daily-table">
+      <thead>
+        <tr>
+          <th>หัวข้อ / วันที่</th>
+          ${fest.dates.map(d => `<th>${formatDateShort(`2000-${d}`)}</th>`).join('')}
+          <th class="total-cell">รวม</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  POLICY_DEFS.forEach(p => {
+    let rowTotal1 = year1.policy[p.key] || 0;
+    let rowTotal2 = year2.policy[p.key] || 0;
+    const totalChange = calcChange(rowTotal1, rowTotal2);
+
+    html += `
+      <tr>
+        <td class="policy-name">${p.emoji} ${p.label}</td>
+        ${fest.dates.map(d => {
+          const v1 = map1[d] ? (Number(map1[d][p.key]) || 0) : 0;
+          const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
+          const change = calcChange(v1, v2);
+          const icon = change.direction === 'increase' ? '📈' : change.direction === 'decrease' ? '📉' : '';
+
+          return `
+            <td class="daily-cell">
+              <div class="cell-vals">
+                <span class="v1">${v1}</span>
+                <span class="vs">vs</span>
+                <span class="v2">${v2}</span>
+              </div>
+              <span class="change-badge mini ${change.direction}">${icon} ${change.pct}%</span>
+            </td>
+          `;
+        }).join('')}
+        <td class="total-cell">
+          <div class="cell-vals">
+            <span class="v1 strong">${rowTotal1}</span>
+            <span class="vs">vs</span>
+            <span class="v2">${rowTotal2}</span>
+          </div>
+          <span class="change-badge ${totalChange.direction}">
+            ${totalChange.pct}%
+          </span>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += '</tbody></table>' ;
+  container.innerHTML = html;
 }
