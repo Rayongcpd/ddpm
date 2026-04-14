@@ -205,6 +205,10 @@ a:hover { color: var(--accent-cyan); }
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
+.nav-toggle {
+  display: none;
+}
+
 .navbar .container {
   display: flex;
   justify-content: space-between;
@@ -1346,20 +1350,105 @@ textarea.form-control {
 
   .container { padding: 0 var(--space-md); }
 
-  .navbar .container { flex-direction: column; gap: var(--space-sm); }
-  .navbar-nav { flex-wrap: wrap; justify-content: center; }
+  /* Navbar Mobile Layout */
+  .navbar .container { 
+    flex-wrap: nowrap; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 0 var(--space-md);
+  }
+
+  .nav-toggle {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 101;
+  }
+
+  .nav-toggle span {
+    width: 100%;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: var(--transition-normal);
+  }
+
+  .nav-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+  .nav-toggle.active span:nth-child(2) { opacity: 0; }
+  .nav-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+  .navbar-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-secondary);
+    flex-direction: column;
+    padding: 80px 20px 20px;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    gap: var(--space-sm);
+  }
+
+  .navbar-nav.active {
+    right: 0;
+  }
+
+  .navbar-nav a {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: var(--space-md);
+    background: var(--bg-tertiary);
+  }
 
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
 
-  .summary-cards { grid-template-columns: repeat(2, 1fr); }
+  .summary-cards { grid-template-columns: 1fr !important; gap: var(--space-md); }
 
-  .page-header h1 { font-size: 1.4rem; }
+  .flex-between, .flex-gap { 
+    flex-direction: column; 
+    align-items: stretch;
+    text-align: center;
+  }
 
-  .controls-bar { flex-direction: column; align-items: stretch; }
+  .page-header { padding: var(--space-lg) 0; }
+  .page-header h1 { font-size: 1.4rem; padding: 0 var(--space-md); }
 
-  .compare-card .compare-values { flex-direction: column; }
+  .controls-bar { 
+    flex-direction: column; 
+    align-items: stretch; 
+    padding: var(--space-md);
+    gap: var(--space-sm);
+  }
+  
+  .controls-bar .flex-gap {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-  .filter-bar { flex-direction: column; }
+  .compare-card .compare-values { flex-direction: column; gap: var(--space-md); }
+
+  .filter-bar { flex-direction: column; align-items: stretch; }
+
+  /* Admin Forms */
+  .form-inline {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .form-inline .form-group {
+    width: 100%;
+    min-width: 0;
+  }
 
   .district-cards-grid { 
     grid-template-columns: repeat(2, 1fr); 
@@ -1371,6 +1460,10 @@ textarea.form-control {
   .summary-cards { grid-template-columns: 1fr; }
   .policy-cards { grid-template-columns: 1fr; }
   .casualty-cards { grid-template-columns: 1fr; }
+  
+  .tabs {
+    padding-bottom: 5px;
+  }
 
   /* Compact District Cards for Mobile */
   .district-cards-grid {
@@ -1411,6 +1504,17 @@ textarea.form-control {
   .district-stat-value {
     font-size: 1.1rem;
     margin-top: 2px;
+  }
+
+  /* Modal Mobile Focus */
+  .modal {
+    width: 95%;
+    max-height: 90vh;
+    padding: var(--space-md);
+  }
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-sm);
   }
 }
 
