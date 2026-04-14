@@ -534,8 +534,10 @@ function renderPolicyDailyTable(year1, year2) {
           const iconYear = changeYear.direction === 'increase' ? '▲' : changeYear.direction === 'decrease' ? '▼' : '•';
           const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}">${iconYear}</span>`;
 
+          const tooltipText = `ปี ${year1.year}: ${v1} | ปี ${year2.year}: ${v2}\nเปลี่ยนแปลง: ${changeYear.pct}${changeYear.pct === 'N/A' ? '' : '%'}`;
+
           return `
-            <td class="daily-cell">
+            <td class="daily-cell" title="${tooltipText}">
               <div class="cell-main">
                 <span class="v1 ${valClass(v1)}">${v1}</span>
                 <div class="trends">
@@ -546,7 +548,7 @@ function renderPolicyDailyTable(year1, year2) {
             </td>
           `;
         }).join('')}
-        <td class="total-cell">
+        <td class="total-cell" title="รวมปี ${year1.year}: ${rowTotal1} | รวมปี ${year2.year}: ${rowTotal2}\nเปลี่ยนแปลง: ${totalChange.pct}${totalChange.pct === 'N/A' ? '' : '%'}">
           <div class="cell-main">
             <span class="v1 strong ${valClass(rowTotal1)}">${rowTotal1}</span>
             <div class="trends">
