@@ -442,32 +442,46 @@ function renderPolicyDailyTable(year1, year2) {
     html += `
       <tr>
         <td class="policy-name">${p.emoji} ${p.label}</td>
-        ${fest.dates.map(d => {
+        ${fest.dates.map((d, idx) => {
           const v1 = map1[d] ? (Number(map1[d][p.key]) || 0) : 0;
           const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
-          const change = calcChange(v1, v2);
-          const icon = change.direction === 'increase' ? '📈' : change.direction === 'decrease' ? '📉' : '';
+          
+          // 1. Day-over-Day Trend (ภายในปีเดียวกัน)
+          let dayTrendHtml = '';
+          if (idx > 0) {
+            const prevD = fest.dates[idx-1];
+            const v1Prev = map1[prevD] ? (Number(map1[prevD][p.key]) || 0) : 0;
+            const changeDay = calcChange(v1, v1Prev);
+            const iconDay = changeDay.direction === 'increase' ? '⬆️' : changeDay.direction === 'decrease' ? '⬇️' : '➖';
+            dayTrendHtml = `<span class="trend-icon ${changeDay.direction}" title="เทียบเมื่อวาน: ${changeDay.pct}% (เมื่อวาน: ${v1Prev})">${iconDay}</span>`;
+          }
+
+          // 2. Year-over-Year Trend (เทียบกับปีก่อนหน้า)
+          const changeYear = calcChange(v1, v2);
+          const iconYear = changeYear.direction === 'increase' ? '🔼' : changeYear.direction === 'decrease' ? '🔽' : '⏺️';
+          const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}" title="เทียบปีก่อนหน้า (ปี ${year2.year}): ${changeYear.pct}% (ปี ${year2.year}: ${v2})">${iconYear}</span>`;
 
           return `
             <td class="daily-cell">
-              <div class="cell-vals">
+              <div class="cell-main">
                 <span class="v1">${v1}</span>
-                <span class="vs">vs</span>
-                <span class="v2">${v2}</span>
+                <div class="trends">
+                  ${dayTrendHtml}
+                  ${yearTrendHtml}
+                </div>
               </div>
-              <span class="change-badge mini ${change.direction}">${icon} ${change.pct}%</span>
             </td>
           `;
         }).join('')}
         <td class="total-cell">
-          <div class="cell-vals">
+          <div class="cell-main">
             <span class="v1 strong">${rowTotal1}</span>
-            <span class="vs">vs</span>
-            <span class="v2">${rowTotal2}</span>
+            <div class="trends">
+              <span class="trend-icon ${totalChange.direction}" title="เทียบกับปี ${year2.year}: ${totalChange.pct}% (ปี ${year2.year}: ${rowTotal2})">
+                ${totalChange.direction === 'increase' ? '🔼' : totalChange.direction === 'decrease' ? '🔽' : '⏺️'}
+              </span>
+            </div>
           </div>
-          <span class="change-badge ${totalChange.direction}">
-            ${totalChange.pct}%
-          </span>
         </td>
       </tr>
     `;
@@ -476,3 +490,4 @@ function renderPolicyDailyTable(year1, year2) {
   html += '</tbody></table>' ;
   container.innerHTML = html;
 }
+
