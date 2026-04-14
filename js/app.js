@@ -54,7 +54,7 @@ function updateFestivalBadge() {
   const fest = FESTIVALS[currentFestival];
   if (badge && fest) {
     badge.className = `festival-badge ${fest.cssClass}`;
-    badge.innerHTML = `${fest.emoji} เทศกาล${fest.name} ${fest.dateRange}`;
+    badge.innerHTML = `${fest.emoji} <span>เทศกาล${fest.name} ${fest.dateRange}</span>`;
   }
 }
 

@@ -299,11 +299,11 @@ function renderDistrictCompareTable(year1, year2) {
   if (year1.districts) year1.districts.forEach(d => { map1[d.district] = d; });
   if (year2.districts) year2.districts.forEach(d => { map2[d.district] = d; });
 
-  let html = `
-    <table class="compare-table">
+  let desktopHtml = `
+    <table class="compare-table compare-desktop-only">
       <thead>
         <tr>
-          <th rowspan="2" class="sticky-col text-left">ชื่ออำเภอ</th>
+          <th rowspan="2" class="text-left">ชื่ออำเภอ</th>
           <th colspan="3">พ.ศ. ${year1.year} (ปีปัจจุบัน)</th>
           <th colspan="3" style="background: rgba(255,255,255,0.03)">พ.ศ. ${year2.year} (ปีก่อนหน้า)</th>
           <th rowspan="2">เปลี่ยนเเปลง</th>
@@ -318,6 +318,18 @@ function renderDistrictCompareTable(year1, year2) {
       <tbody>
   `;
 
+  let mobileHtml = `
+    <div class="compare-mobile-only compare-card-grid">
+      <div class="district-compare-card">
+        <div class="mobile-metric-row header">
+          <div class="mobile-metric-label">อำเภอ / ข้อมูล</div>
+          <div class="mobile-metric-value v1">${year1.year}</div>
+          <div class="mobile-metric-value v2">${year2.year}</div>
+          <div class="mobile-metric-value">แนวโน้ม</div>
+        </div>
+      </div>
+  `;
+
   DISTRICTS.forEach(name => {
     const d1 = map1[name] || { accidents: 0, injuries: 0, deaths: 0 };
     const d2 = map2[name] || { accidents: 0, injuries: 0, deaths: 0 };
@@ -325,9 +337,9 @@ function renderDistrictCompareTable(year1, year2) {
     const total2 = (d2.accidents || 0) + (d2.injuries || 0) + (d2.deaths || 0);
     const change = calcChange(total1, total2);
 
-    html += `
+    desktopHtml += `
       <tr>
-        <td class="text-left sticky-col font-bold">${name}</td>
+        <td class="text-left font-bold">${name}</td>
         <td class="${valClass(d1.accidents)}">${d1.accidents || 0}</td>
         <td class="${d1.injuries > 0 ? 'text-warning' : ''} ${valClass(d1.injuries)} font-bold">${d1.injuries || 0}</td>
         <td class="${d1.deaths > 0 ? 'text-danger' : ''} ${valClass(d1.deaths)} font-bold">${d1.deaths || 0}</td>
@@ -337,10 +349,37 @@ function renderDistrictCompareTable(year1, year2) {
         <td><span class="change-badge ${change.direction} mini">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span></td>
       </tr>
     `;
+
+    // Mobile Section
+    const metrics = [
+      { label: 'อุบัติเหตุ', v1: d1.accidents, v2: d2.accidents, c: calcChange(d1.accidents, d2.accidents) },
+      { label: 'บาดเจ็บ', v1: d1.injuries, v2: d2.injuries, c: calcChange(d1.injuries, d2.injuries) },
+      { label: 'เสียชีวิต', v1: d1.deaths, v2: d2.deaths, c: calcChange(d1.deaths, d2.deaths) }
+    ];
+
+    mobileHtml += `
+      <div class="district-compare-card active">
+        <div class="district-name">
+          <span>${name}</span>
+          <span class="change-badge ${change.direction} mini">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span>
+        </div>
+        ${metrics.map(m => `
+          <div class="mobile-metric-row">
+            <div class="mobile-metric-label">${m.label}</div>
+            <div class="mobile-metric-value v1 ${valClass(m.v1)}">${m.v1 || 0}</div>
+            <div class="mobile-metric-value v2">${m.v2 || 0}</div>
+            <div class="mobile-metric-value">
+              <span class="trend-icon ${m.c.direction}">${m.c.direction === 'increase' ? '🔺' : m.c.direction === 'decrease' ? '🔽' : '—'}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
   });
 
-  html += '</tbody></table>';
-  container.innerHTML = html;
+  desktopHtml += '</tbody></table>' ;
+  mobileHtml += '</div>';
+  container.innerHTML = desktopHtml + mobileHtml;
 }
 
 /**
@@ -400,7 +439,6 @@ function renderPolicyCompareChart(year1, year2) {
   // Policy compare list (Fixed Alignment & Sorted)
   const cardsContainer = document.getElementById('policyCompareCards');
   if (cardsContainer) {
-    // Corrected sort:
     const sortedItems = POLICY_DEFS.map(item => ({
       ...item,
       v1: p1[item.key] || 0,
@@ -433,8 +471,8 @@ function renderPolicyDailyTable(year1, year2) {
   if (!container) return;
 
   const fest = FESTIVALS[compareFestival];
-  const daily1 = year1.policy.daily || [];
-  const daily2 = year2.policy.daily || [];
+  const daily1 = (year1.policy && year1.policy.daily) ? year1.policy.daily : [];
+  const daily2 = (year2.policy && year2.policy.daily) ? year2.policy.daily : [];
 
   // Map data by [datePart (MM-DD)][policyKey]
   const map1 = {};
@@ -450,11 +488,11 @@ function renderPolicyDailyTable(year1, year2) {
     map2[dayPart] = r; 
   });
 
-  let html = `
-    <table class="compare-table policy-daily-table">
+  let desktopHtml = `
+    <table class="compare-table policy-daily-table compare-desktop-only">
       <thead>
         <tr>
-          <th class="sticky-col text-left">หัวข้อ / วันที่</th>
+          <th class="text-left">หัวข้อ / วันที่</th>
           ${fest.dates.map(d => `<th>${formatDateShort(`2000-${d}`)}</th>`).join('')}
           <th class="total-cell">รวม</th>
         </tr>
@@ -462,39 +500,39 @@ function renderPolicyDailyTable(year1, year2) {
       <tbody>
   `;
 
+  let mobileHtml = `<div class="compare-mobile-only">`;
+
   // Sort policies by total (year1) descending
   const sortedPolicies = [...POLICY_DEFS].sort((a, b) => {
-    const valA = year1.policy[a.key] || 0;
-    const valB = year1.policy[b.key] || 0;
+    const valA = (year1.policy && year1.policy[a.key]) || 0;
+    const valB = (year1.policy && year1.policy[b.key]) || 0;
     return valB - valA;
   });
 
   sortedPolicies.forEach(p => {
-    let rowTotal1 = year1.policy[p.key] || 0;
-    let rowTotal2 = year2.policy[p.key] || 0;
+    let rowTotal1 = (year1.policy && year1.policy[p.key]) || 0;
+    let rowTotal2 = (year2.policy && year2.policy[p.key]) || 0;
     const totalChange = calcChange(rowTotal1, rowTotal2);
 
-    html += `
+    desktopHtml += `
       <tr>
-        <td class="policy-name sticky-col text-left font-bold">${p.emoji} ${p.label}</td>
+        <td class="policy-name text-left font-bold">${p.emoji} ${p.label}</td>
         ${fest.dates.map((d, idx) => {
           const v1 = map1[d] ? (Number(map1[d][p.key]) || 0) : 0;
           const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
           
-          // 1. Day-over-Day Trend (ภายในปีเดียวกัน)
           let dayTrendHtml = '';
           if (idx > 0) {
             const prevD = fest.dates[idx-1];
             const v1Prev = map1[prevD] ? (Number(map1[prevD][p.key]) || 0) : 0;
             const changeDay = calcChange(v1, v1Prev);
             const iconDay = changeDay.direction === 'increase' ? '↑' : changeDay.direction === 'decrease' ? '↓' : '-';
-            dayTrendHtml = `<span class="trend-icon ${changeDay.direction}" title="เทียบเมื่อวาน: ${changeDay.pct}${changeDay.pct === 'N/A' ? '' : '%'} (เมื่อวาน: ${v1Prev})">${iconDay}</span>`;
+            dayTrendHtml = `<span class="trend-icon ${changeDay.direction}">${iconDay}</span>`;
           }
 
-          // 2. Year-over-Year Trend (เทียบกับปีก่อนหน้า)
           const changeYear = calcChange(v1, v2);
           const iconYear = changeYear.direction === 'increase' ? '▲' : changeYear.direction === 'decrease' ? '▼' : '•';
-          const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}" title="เทียบปีก่อนหน้า (ปี ${year2.year}): ${changeYear.pct}${changeYear.pct === 'N/A' ? '' : '%'} (ปี ${year2.year}: ${v2})">${iconYear}</span>`;
+          const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}">${iconYear}</span>`;
 
           return `
             <td class="daily-cell">
@@ -512,7 +550,7 @@ function renderPolicyDailyTable(year1, year2) {
           <div class="cell-main">
             <span class="v1 strong ${valClass(rowTotal1)}">${rowTotal1}</span>
             <div class="trends">
-              <span class="trend-icon ${totalChange.direction}" title="เทียบกับปี ${year2.year}: ${totalChange.pct}${totalChange.pct === 'N/A' ? '' : '%'} (ปี ${year2.year}: ${rowTotal2})">
+              <span class="trend-icon ${totalChange.direction}">
                 ${totalChange.direction === 'increase' ? '▲' : totalChange.direction === 'decrease' ? '▼' : '•'}
               </span>
             </div>
@@ -520,9 +558,35 @@ function renderPolicyDailyTable(year1, year2) {
         </td>
       </tr>
     `;
+
+    // Mobile Section
+    mobileHtml += `
+      <div class="policy-mobile-item" style="border-left-color: ${p.color}">
+        <div class="policy-mobile-header">
+          <div class="policy-mobile-title">${p.emoji} ${p.label}</div>
+          <span class="change-badge ${totalChange.direction} mini">${totalChange.pct}${totalChange.pct === 'N/A' ? '' : '%'}</span>
+        </div>
+        <div class="policy-mobile-grid">
+          <div class="policy-mobile-val-box">
+            <span class="val v1 ${valClass(rowTotal1)}">${rowTotal1}</span>
+            <span class="lbl">ปี ${year1.year}</span>
+          </div>
+          <div class="policy-mobile-val-box">
+            <span class="val v2">${rowTotal2}</span>
+            <span class="lbl">ปี ${year2.year}</span>
+          </div>
+          <div class="policy-mobile-val-box">
+            <span class="val trend ${totalChange.direction}">
+              ${totalChange.direction === 'increase' ? '🔺' : totalChange.direction === 'decrease' ? '🔽' : '—'}
+            </span>
+            <span class="lbl">แนวโน้ม</span>
+          </div>
+        </div>
+      </div>
+    `;
   });
 
-  html += '</tbody></table>' ;
-  container.innerHTML = html;
+  desktopHtml += '</tbody></table>' ;
+  mobileHtml += '</div>';
+  container.innerHTML = desktopHtml + mobileHtml;
 }
-
