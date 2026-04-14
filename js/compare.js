@@ -222,6 +222,18 @@ function renderCompareBarChart(year1, year2) {
           data: data2.map(r => Number(r.injuries) || 0),
           backgroundColor: 'rgba(255,215,64,0.3)',
           borderRadius: 4
+        },
+        {
+          label: `เสียชีวิต ${year1.year}`,
+          data: data1.map(r => Number(r.deaths) || 0),
+          backgroundColor: 'rgba(223,27,65,0.8)',
+          borderRadius: 4
+        },
+        {
+          label: `เสียชีวิต ${year2.year}`,
+          data: data2.map(r => Number(r.deaths) || 0),
+          backgroundColor: 'rgba(223,27,65,0.3)',
+          borderRadius: 4
         }
       ]
     },
