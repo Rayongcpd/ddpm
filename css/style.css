@@ -851,7 +851,10 @@ textarea.form-control {
   margin-bottom: var(--space-md);
 }
 
-/* ===== Comparison ===== */
+/* ===== Comparison Visibility Toggles ===== */
+.compare-mobile-only { display: none; }
+.compare-desktop-only { display: block; }
+
 .compare-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
