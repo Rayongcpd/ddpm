@@ -434,7 +434,14 @@ function renderPolicyDailyTable(year1, year2) {
       <tbody>
   `;
 
-  POLICY_DEFS.forEach(p => {
+  // Sort policies by total (year1) descending
+  const sortedPolicies = [...POLICY_DEFS].sort((a, b) => {
+    const valA = year1.policy[a.key] || 0;
+    const valB = year1.policy[b.key] || 0;
+    return valB - valA;
+  });
+
+  sortedPolicies.forEach(p => {
     let rowTotal1 = year1.policy[p.key] || 0;
     let rowTotal2 = year2.policy[p.key] || 0;
     const totalChange = calcChange(rowTotal1, rowTotal2);
