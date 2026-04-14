@@ -860,8 +860,9 @@ textarea.form-control {
 }
 
 /* ===== Comparison Visibility Toggles ===== */
-.compare-mobile-only { display: none; }
-.compare-desktop-only { display: block; }
+.compare-mobile-only { display: none !important; }
+/* NOTE: .compare-desktop-only ไม่ต้องกำหนด display เพราะจะทำให้ <table> เสีย layout
+   ปล่อยให้ element ใช้ค่า default ของตัวเอง (table = display:table, div = display:block) */
 
 .compare-cards {
   display: grid;
