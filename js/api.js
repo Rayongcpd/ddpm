@@ -380,8 +380,8 @@ function getFestivalDates(festival, year) {
  * Calculate percentage change
  */
 function calcChange(current, previous) {
-  if (!previous || previous === 0) {
-    return current > 0 ? { pct: 100, direction: 'increase' } : { pct: 0, direction: 'neutral' };
+  if (!previous || Number(previous) === 0) {
+    return Number(current) > 0 ? { pct: 'N/A', direction: 'increase' } : { pct: '0', direction: 'neutral' };
   }
   const pct = ((current - previous) / previous * 100).toFixed(1);
   if (pct > 0) return { pct: `+${pct}`, direction: 'increase' };

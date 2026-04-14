@@ -144,7 +144,7 @@ function renderComparison(data) {
  */
 function renderCompareCard(title, val1, val2, yr1, yr2, type) {
   const change = calcChange(val1, val2);
-  const icon = change.direction === 'increase' ? '📈' : change.direction === 'decrease' ? '📉' : '➡️';
+  const icon = change.direction === 'increase' ? '🔺' : change.direction === 'decrease' ? '🔽' : '➖';
   // For accidents/injuries/deaths: decrease is good, increase is bad
   const goodDirection = change.direction === 'decrease';
 
@@ -164,10 +164,10 @@ function renderCompareCard(title, val1, val2, yr1, yr2, type) {
       </div>
       <div class="text-center">
         <span class="change-badge ${change.direction}">
-          ${icon} ${change.pct}%
+          ${icon} ${change.pct}${change.pct === 'N/A' ? '' : '%'}
         </span>
         <div class="font-sm text-muted mt-sm">
-          ${goodDirection ? '✅ ลดลง' : change.direction === 'increase' ? '⚠️ เพิ่มขึ้น' : '— เท่าเดิม'}
+          ${goodDirection ? '✅ ลดลง' : change.direction === 'increase' ? '🔴 เพิ่มขึ้น' : '— เท่าเดิม'}
           เทียบกับปี ${yr2}
         </div>
       </div>
@@ -307,7 +307,7 @@ function renderDistrictCompareTable(year1, year2) {
         <td>${d2.accidents || 0}</td>
         <td class="${d2.injuries > 0 ? 'text-warning' : ''}">${d2.injuries || 0}</td>
         <td class="${d2.deaths > 0 ? 'text-danger' : ''}">${d2.deaths || 0}</td>
-        <td><span class="change-badge ${change.direction}">${change.pct}%</span></td>
+        <td><span class="change-badge ${change.direction}">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span></td>
       </tr>
     `;
   });
@@ -389,7 +389,7 @@ function renderPolicyCompareChart(year1, year2) {
           <span class="stat-vs">vs</span>
           <span class="stat-number text-secondary">${formatNumber(item.v2)}</span>
           <div class="stat-badge-wrap">
-            <span class="change-badge ${change.direction}">${change.pct}%</span>
+            <span class="change-badge ${change.direction}">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span>
           </div>
         </div>
       `;
@@ -460,13 +460,13 @@ function renderPolicyDailyTable(year1, year2) {
             const v1Prev = map1[prevD] ? (Number(map1[prevD][p.key]) || 0) : 0;
             const changeDay = calcChange(v1, v1Prev);
             const iconDay = changeDay.direction === 'increase' ? '↑' : changeDay.direction === 'decrease' ? '↓' : '-';
-            dayTrendHtml = `<span class="trend-icon ${changeDay.direction}" title="เทียบเมื่อวาน: ${changeDay.pct}% (เมื่อวาน: ${v1Prev})">${iconDay}</span>`;
+            dayTrendHtml = `<span class="trend-icon ${changeDay.direction}" title="เทียบเมื่อวาน: ${changeDay.pct}${changeDay.pct === 'N/A' ? '' : '%'} (เมื่อวาน: ${v1Prev})">${iconDay}</span>`;
           }
 
           // 2. Year-over-Year Trend (เทียบกับปีก่อนหน้า)
           const changeYear = calcChange(v1, v2);
           const iconYear = changeYear.direction === 'increase' ? '▲' : changeYear.direction === 'decrease' ? '▼' : '•';
-          const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}" title="เทียบปีก่อนหน้า (ปี ${year2.year}): ${changeYear.pct}% (ปี ${year2.year}: ${v2})">${iconYear}</span>`;
+          const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}" title="เทียบปีก่อนหน้า (ปี ${year2.year}): ${changeYear.pct}${changeYear.pct === 'N/A' ? '' : '%'} (ปี ${year2.year}: ${v2})">${iconYear}</span>`;
 
           return `
             <td class="daily-cell">
@@ -484,7 +484,7 @@ function renderPolicyDailyTable(year1, year2) {
           <div class="cell-main">
             <span class="v1 strong">${rowTotal1}</span>
             <div class="trends">
-              <span class="trend-icon ${totalChange.direction}" title="เทียบกับปี ${year2.year}: ${totalChange.pct}% (ปี ${year2.year}: ${rowTotal2})">
+              <span class="trend-icon ${totalChange.direction}" title="เทียบกับปี ${year2.year}: ${totalChange.pct}${totalChange.pct === 'N/A' ? '' : '%'} (ปี ${year2.year}: ${rowTotal2})">
                 ${totalChange.direction === 'increase' ? '▲' : totalChange.direction === 'decrease' ? '▼' : '•'}
               </span>
             </div>
