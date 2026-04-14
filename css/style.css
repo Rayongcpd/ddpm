@@ -217,7 +217,8 @@ a:hover { color: var(--accent-cyan); }
   display: none;
 }
 
-.navbar .container {
+.navbar .container,
+.navbar .container-wide {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1372,7 +1373,8 @@ textarea.form-control {
   .container { padding: 0 var(--space-md); }
 
   /* Navbar Mobile Layout */
-  .navbar .container { 
+  .navbar .container,
+  .navbar .container-wide { 
     flex-wrap: nowrap; 
     justify-content: space-between; 
     align-items: center;

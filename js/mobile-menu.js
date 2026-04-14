@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainNav = document.getElementById('mainNav');
     if (!mainNav) return;
 
-    const navContainer = mainNav.querySelector('.container');
+    const navContainer = mainNav.querySelector('.container, .container-wide');
     const navList = mainNav.querySelector('.navbar-nav');
+    
+    if (!navContainer || !navList) return;
 
     // 1. Create hamburger button if it doesn't exist
     let toggleBtn = mainNav.querySelector('.nav-toggle');
