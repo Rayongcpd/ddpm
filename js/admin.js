@@ -197,74 +197,8 @@ function renderDailyAdminTable(data) {
       <td>${row.accidents}</td>
       <td>${row.injuries}</td>
       <td>${row.deaths}</td>
-      <td>
-        <button class="btn btn-sm btn-outline" onclick="editDailyRow('${row.date}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteDailyRow('${row.date}')">🗑️</button>
-      </td>
     </tr>
   `).join('');
-}
-
-async function saveDailyForm(e) {
-  e.preventDefault();
-  const token = getAuthToken();
-  if (!token) { showToast('กรุณาเข้าสู่ระบบ', 'error'); return; }
-
-  const payload = {
-    year: adminYear,
-    festival: adminFestival,
-    date: document.getElementById('dailyDate').value,
-    accidents: document.getElementById('dailyAccidents').value,
-    injuries: document.getElementById('dailyInjuries').value,
-    deaths: document.getElementById('dailyDeaths').value
-  };
-
-  if (!payload.date) { showToast('กรุณาเลือกวันที่', 'warning'); return; }
-
-  try {
-    const result = await saveDailyData(payload, token);
-    if (result.success) {
-      showToast(result.message, 'success');
-      loadDailyAdmin();
-    } else {
-      showToast(result.error?.message || 'เกิดข้อผิดพลาด', 'error');
-    }
-  } catch (error) {
-    showToast('ไม่สามารถบันทึกข้อมูล', 'error');
-  }
-}
-
-async function deleteDailyRow(date) {
-  if (!confirm('ต้องการลบข้อมูลวันที่ ' + formatDate(date) + ' ?')) return;
-  const token = getAuthToken();
-
-  try {
-    const result = await deleteDailyData({ year: adminYear, festival: adminFestival, date }, token);
-    if (result.success) {
-      showToast(result.message, 'success');
-      loadDailyAdmin();
-    }
-  } catch (error) {
-    showToast('ไม่สามารถลบข้อมูล', 'error');
-  }
-}
-
-async function editDailyRow(date) {
-  try {
-    const result = await fetchDailyStats(adminYear, adminFestival);
-    if (result.success) {
-      const record = result.data.find(r => r.date === date);
-      if (record) {
-        document.getElementById('dailyDate').value = record.date;
-        document.getElementById('dailyAccidents').value = record.accidents || 0;
-        document.getElementById('dailyInjuries').value = record.injuries || 0;
-        document.getElementById('dailyDeaths').value = record.deaths || 0;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-  } catch {
-    showToast('ไม่สามารถโหลดข้อมูล', 'error');
-  }
 }
 
 // ==================== District Stats Admin ====================

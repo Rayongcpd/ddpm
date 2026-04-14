@@ -93,35 +93,8 @@
 
       <!-- ==================== TAB: Daily Stats ==================== -->
       <div class="tab-panel active" id="panel-daily">
-        <div class="card mb-lg">
-          <h3 class="section-title">➕ เพิ่ม/แก้ไขข้อมูลรายวัน</h3>
-          <form onsubmit="saveDailyForm(event)">
-            <div class="form-inline">
-              <div class="form-group">
-                <label class="form-label">วันที่</label>
-                <select class="form-control date-select" id="dailyDate" required></select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">อุบัติเหตุ (ครั้ง)</label>
-                <input type="number" class="form-control" id="dailyAccidents" min="0" value="0">
-              </div>
-              <div class="form-group">
-                <label class="form-label">บาดเจ็บ (ราย)</label>
-                <input type="number" class="form-control" id="dailyInjuries" min="0" value="0">
-              </div>
-              <div class="form-group">
-                <label class="form-label">เสียชีวิต (ราย)</label>
-                <input type="number" class="form-control" id="dailyDeaths" min="0" value="0">
-              </div>
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">💾 บันทึก</button>
-              </div>
-            </div>
-          </form>
-        </div>
-
         <div class="card">
-          <h3 class="section-title">📋 ข้อมูลที่บันทึกแล้ว</h3>
+          <h3 class="section-title">📋 ข้อมูลรายวัน (สรุปอัตโนมัติจากรายอำเภอ)</h3>
           <div class="table-wrapper">
             <table>
               <thead>
@@ -130,11 +103,10 @@
                   <th>อุบัติเหตุ</th>
                   <th>บาดเจ็บ</th>
                   <th>เสียชีวิต</th>
-                  <th>จัดการ</th>
                 </tr>
               </thead>
               <tbody id="dailyTableBody">
-                <tr><td colspan="5" class="text-center text-muted p-lg">กำลังโหลด...</td></tr>
+                <tr><td colspan="4" class="text-center text-muted p-lg">กำลังโหลด...</td></tr>
               </tbody>
             </table>
           </div>
