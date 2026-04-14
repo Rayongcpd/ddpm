@@ -10,6 +10,23 @@ let compareFestival = 'songkran';
 let compareBarChart = null;
 let comparePolicyChart = null;
 
+/**
+ * Utility: Get current theme colors from CSS
+ */
+function getThemeColors() {
+  const style = getComputedStyle(document.documentElement);
+  return {
+    blue: style.getPropertyValue('--accent-blue').trim() || '#4f7cff',
+    gold: style.getPropertyValue('--accent-gold').trim() || '#ffd740',
+    red: style.getPropertyValue('--accent-red').trim() || '#df1b41',
+    purple: style.getPropertyValue('--accent-purple').trim() || '#b388ff',
+    text: style.getPropertyValue('--text-primary').trim() || '#ffffff',
+    secondary: style.getPropertyValue('--text-secondary').trim() || '#9fa8da',
+    muted: style.getPropertyValue('--text-muted').trim() || '#5c6bc0',
+    grid: 'rgba(255,255,255,0.05)'
+  };
+}
+
 // ========== Initialize ==========
 document.addEventListener('DOMContentLoaded', () => {
   initCompareControls();
@@ -94,7 +111,7 @@ function renderComparison(data) {
 
   content.innerHTML = `
     <!-- Summary Comparison -->
-    <div class="compare-cards mb-xl">
+    <div class="compare-cards mb-xl animate-slide-up">
       ${renderCompareCard('🚗 อุบัติเหตุ', year1.totals.accidents, year2.totals.accidents, year1.year, year2.year, 'accidents')}
       ${renderCompareCard('🏥 บาดเจ็บ', year1.totals.injuries, year2.totals.injuries, year1.year, year2.year, 'injuries')}
       ${renderCompareCard('✝️ เสียชีวิต', year1.totals.deaths, year2.totals.deaths, year1.year, year2.year, 'deaths')}
@@ -105,7 +122,7 @@ function renderComparison(data) {
     </div>
 
     <!-- Daily Comparison Chart -->
-    <div class="card mb-xl">
+    <div class="card mb-xl animate-slide-up delay-1">
       <h3 class="section-title">📊 เปรียบเทียบรายวัน</h3>
       <div class="chart-container" style="min-height:350px">
         <canvas id="compareBarChart"></canvas>
@@ -113,13 +130,13 @@ function renderComparison(data) {
     </div>
 
     <!-- District Comparison -->
-    <div class="card mb-xl">
+    <div class="card mb-xl animate-slide-up delay-2">
       <h3 class="section-title">🏘️ เปรียบเทียบรายอำเภอ</h3>
       <div class="table-wrapper" id="districtCompareTable"></div>
     </div>
 
     <!-- Policy Comparison -->
-    <div class="card mb-xl">
+    <div class="card mb-xl animate-slide-up delay-3">
       <h3 class="section-title">⚠️ เปรียบเทียบนโยบายเน้นหนัก (ภาพรวม)</h3>
       <div class="grid-2">
         <div class="chart-container" style="min-height:300px">
@@ -129,7 +146,7 @@ function renderComparison(data) {
       </div>
       
       <h3 class="section-title mt-xl">📅 เปรียบเทียบนโยบายรายวัน (10 รสขม)</h3>
-      <div class="table-wrapper" id="policyDailyTable"></div>
+      <div class="table-wrapper animate-slide-up" id="policyDailyTable"></div>
     </div>
   `;
 
@@ -197,6 +214,7 @@ function renderCompareBarChart(year1, year2) {
 
   const data1 = mapDaily(year1.daily);
   const data2 = mapDaily(year2.daily);
+  const colors = getThemeColors();
 
   compareBarChart = new Chart(ctx, {
     type: 'bar',
@@ -206,37 +224,37 @@ function renderCompareBarChart(year1, year2) {
         {
           label: `อุบัติเหตุ ${year1.year}`,
           data: data1.map(r => Number(r.accidents) || 0),
-          backgroundColor: 'rgba(79,124,255,0.8)',
+          backgroundColor: colors.blue,
           borderRadius: 4
         },
         {
           label: `อุบัติเหตุ ${year2.year}`,
           data: data2.map(r => Number(r.accidents) || 0),
-          backgroundColor: 'rgba(79,124,255,0.3)',
+          backgroundColor: colors.blue + '44', // 0.3 alpha
           borderRadius: 4
         },
         {
           label: `บาดเจ็บ ${year1.year}`,
           data: data1.map(r => Number(r.injuries) || 0),
-          backgroundColor: 'rgba(255,215,64,0.8)',
+          backgroundColor: colors.gold,
           borderRadius: 4
         },
         {
           label: `บาดเจ็บ ${year2.year}`,
           data: data2.map(r => Number(r.injuries) || 0),
-          backgroundColor: 'rgba(255,215,64,0.3)',
+          backgroundColor: colors.gold + '44',
           borderRadius: 4
         },
         {
           label: `เสียชีวิต ${year1.year}`,
           data: data1.map(r => Number(r.deaths) || 0),
-          backgroundColor: 'rgba(223,27,65,0.8)',
+          backgroundColor: colors.red,
           borderRadius: 4
         },
         {
           label: `เสียชีวิต ${year2.year}`,
           data: data2.map(r => Number(r.deaths) || 0),
-          backgroundColor: 'rgba(223,27,65,0.3)',
+          backgroundColor: colors.red + '44',
           borderRadius: 4
         }
       ]
@@ -245,17 +263,17 @@ function renderCompareBarChart(year1, year2) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#9fa8da', font: { family: 'Prompt' } } }
+        legend: { labels: { color: colors.secondary, font: { family: 'Prompt' } } }
       },
       scales: {
         x: {
-          ticks: { color: '#5c6bc0', font: { family: 'Prompt' } },
-          grid: { color: 'rgba(255,255,255,0.05)' }
+          ticks: { color: colors.muted, font: { family: 'Prompt' } },
+          grid: { color: colors.grid }
         },
         y: {
           beginAtZero: true,
-          ticks: { color: '#5c6bc0', stepSize: 1, font: { family: 'Prompt' } },
-          grid: { color: 'rgba(255,255,255,0.05)' }
+          ticks: { color: colors.muted, stepSize: 1, font: { family: 'Prompt' } },
+          grid: { color: colors.grid }
         }
       }
     }
@@ -275,17 +293,19 @@ function renderDistrictCompareTable(year1, year2) {
   if (year2.districts) year2.districts.forEach(d => { map2[d.district] = d; });
 
   let html = `
-    <table>
+    <table class="compare-table">
       <thead>
         <tr>
-          <th rowspan="2">อำเภอ</th>
-          <th colspan="3">พ.ศ. ${year1.year}</th>
-          <th colspan="3">พ.ศ. ${year2.year}</th>
-          <th rowspan="2">เปลี่ยนแปลง</th>
+          <th rowspan="2" class="sticky-col text-left">ชื่ออำเภอ</th>
+          <th colspan="3">พ.ศ. ${year1.year} (ปีปัจจุบัน)</th>
+          <th colspan="3" style="background: rgba(255,255,255,0.03)">พ.ศ. ${year2.year} (ปีก่อนหน้า)</th>
+          <th rowspan="2">เปลี่ยนเเปลง</th>
         </tr>
         <tr>
           <th>อุบัติเหตุ</th><th>บาดเจ็บ</th><th>เสียชีวิต</th>
-          <th>อุบัติเหตุ</th><th>บาดเจ็บ</th><th>เสียชีวิต</th>
+          <th style="background: rgba(255,255,255,0.03)">อุบัติเหตุ</th>
+          <th style="background: rgba(255,255,255,0.03)">บาดเจ็บ</th>
+          <th style="background: rgba(255,255,255,0.03)">เสียชีวิต</th>
         </tr>
       </thead>
       <tbody>
@@ -300,14 +320,14 @@ function renderDistrictCompareTable(year1, year2) {
 
     html += `
       <tr>
-        <td class="text-left">${name}</td>
+        <td class="text-left sticky-col font-bold">${name}</td>
         <td>${d1.accidents || 0}</td>
-        <td class="${d1.injuries > 0 ? 'text-warning' : ''}">${d1.injuries || 0}</td>
-        <td class="${d1.deaths > 0 ? 'text-danger' : ''}">${d1.deaths || 0}</td>
-        <td>${d2.accidents || 0}</td>
-        <td class="${d2.injuries > 0 ? 'text-warning' : ''}">${d2.injuries || 0}</td>
-        <td class="${d2.deaths > 0 ? 'text-danger' : ''}">${d2.deaths || 0}</td>
-        <td><span class="change-badge ${change.direction}">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span></td>
+        <td class="${d1.injuries > 0 ? 'text-warning' : ''} font-bold">${d1.injuries || 0}</td>
+        <td class="${d1.deaths > 0 ? 'text-danger' : ''} font-bold">${d1.deaths || 0}</td>
+        <td style="background: rgba(255,255,255,0.01)">${d2.accidents || 0}</td>
+        <td style="background: rgba(255,255,255,0.01)" class="${d2.injuries > 0 ? 'text-warning' : ''}">${d2.injuries || 0}</td>
+        <td style="background: rgba(255,255,255,0.01)" class="${d2.deaths > 0 ? 'text-danger' : ''}">${d2.deaths || 0}</td>
+        <td><span class="change-badge ${change.direction} mini">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span></td>
       </tr>
     `;
   });
@@ -326,6 +346,7 @@ function renderPolicyCompareChart(year1, year2) {
 
   const p1 = year1.policy || {};
   const p2 = year2.policy || {};
+  const colors = getThemeColors();
 
   const labels = POLICY_DEFS.map(d => d.label);
   const data1 = POLICY_DEFS.map(d => p1[d.key] || 0);
@@ -339,16 +360,16 @@ function renderPolicyCompareChart(year1, year2) {
         {
           label: `พ.ศ. ${year1.year}`,
           data: data1,
-          borderColor: '#4f7cff',
-          backgroundColor: 'rgba(79,124,255,0.2)',
-          pointBackgroundColor: '#4f7cff'
+          borderColor: colors.blue,
+          backgroundColor: colors.blue + '33',
+          pointBackgroundColor: colors.blue
         },
         {
           label: `พ.ศ. ${year2.year}`,
           data: data2,
-          borderColor: '#b388ff',
-          backgroundColor: 'rgba(179,136,255,0.2)',
-          pointBackgroundColor: '#b388ff'
+          borderColor: colors.purple,
+          backgroundColor: colors.purple + '33',
+          pointBackgroundColor: colors.purple
         }
       ]
     },
@@ -356,14 +377,14 @@ function renderPolicyCompareChart(year1, year2) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#9fa8da', font: { family: 'Prompt' } } }
+        legend: { labels: { color: colors.secondary, font: { family: 'Prompt' } } }
       },
       scales: {
         r: {
           beginAtZero: true,
-          ticks: { color: '#5c6bc0', backdropColor: 'transparent', font: { family: 'Prompt', size: 10 } },
-          grid: { color: 'rgba(255,255,255,0.1)' },
-          pointLabels: { color: '#9fa8da', font: { family: 'Prompt', size: 10 } }
+          ticks: { color: colors.muted, backdropColor: 'transparent', font: { family: 'Prompt', size: 10 } },
+          grid: { color: colors.grid },
+          pointLabels: { color: colors.secondary, font: { family: 'Prompt', size: 10 } }
         }
       }
     }
@@ -423,10 +444,10 @@ function renderPolicyDailyTable(year1, year2) {
   });
 
   let html = `
-    <table class="policy-daily-table">
+    <table class="compare-table policy-daily-table">
       <thead>
         <tr>
-          <th>หัวข้อ / วันที่</th>
+          <th class="sticky-col text-left">หัวข้อ / วันที่</th>
           ${fest.dates.map(d => `<th>${formatDateShort(`2000-${d}`)}</th>`).join('')}
           <th class="total-cell">รวม</th>
         </tr>
@@ -448,7 +469,7 @@ function renderPolicyDailyTable(year1, year2) {
 
     html += `
       <tr>
-        <td class="policy-name">${p.emoji} ${p.label}</td>
+        <td class="policy-name sticky-col text-left font-bold">${p.emoji} ${p.label}</td>
         ${fest.dates.map((d, idx) => {
           const v1 = map1[d] ? (Number(map1[d][p.key]) || 0) : 0;
           const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;

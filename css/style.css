@@ -420,7 +420,23 @@ a:hover { color: var(--accent-cyan); }
 .table-wrapper {
   overflow-x: auto;
   border-radius: var(--radius-md);
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
 }
+
+.table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--glass-border);
+  border-radius: 10px;
+}
+
 
 table {
   width: 100%;
@@ -1507,41 +1523,78 @@ textarea.form-control {
   justify-content: center;
 }
 
-/* ===== Policy Daily Table ===== */
-.policy-daily-table {
+/* ===== Comparison Tables ===== */
+.compare-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   margin-top: var(--space-md);
+  font-family: var(--font-primary);
 }
 
-.policy-daily-table thead th {
+.compare-table thead th {
   position: sticky;
   top: 0;
   z-index: 10;
   background: var(--bg-secondary);
-  font-size: 0.75rem;
-  padding: var(--space-sm);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: var(--space-md) var(--space-sm);
   border-bottom: 2px solid var(--glass-border);
+  text-align: center;
 }
 
-.policy-daily-table td {
+.compare-table td {
   padding: var(--space-md) var(--space-sm);
   text-align: center;
   border-bottom: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.compare-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.compare-table .text-left { text-align: left; }
+.compare-table .text-right { text-align: right; }
+
+.compare-table .sticky-col {
+  position: sticky;
+  left: 0;
+  background: var(--bg-secondary);
+  z-index: 5;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+}
+
+/* Animations */
+.animate-slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+
+/* ===== Policy Daily Table (Extends .compare-table) ===== */
+.policy-daily-table {
+  /* Inherits from .compare-table via JS */
+}
+
+.policy-daily-table thead th {
+  z-index: 10;
+  font-size: 0.75rem;
+}
+
+.policy-daily-table td {
   vertical-align: middle;
 }
 
 .policy-daily-table .policy-name {
-  text-align: left;
-  font-weight: 500;
-  color: var(--text-primary);
   min-width: 180px;
-  background: var(--bg-secondary);
-  position: sticky;
-  left: 0;
-  z-index: 5;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.02);
 }
 
 .policy-daily-table .daily-cell {
