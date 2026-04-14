@@ -1577,7 +1577,21 @@ textarea.form-control {
 
 @media (max-width: 480px) {
   .summary-cards { grid-template-columns: 1fr; }
-  .policy-cards { grid-template-columns: 1fr; }
+  .policy-cards { grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); }
+  .policy-card {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-sm);
+    gap: var(--space-sm);
+  }
+  .policy-card .policy-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  .policy-card .policy-value {
+    font-size: 1.2rem;
+  }
   .casualty-cards { grid-template-columns: 1fr; }
   
   .tabs {
