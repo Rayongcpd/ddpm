@@ -149,7 +149,7 @@ function renderComparison(data) {
         <div class="chart-container" style="min-height:300px">
           <canvas id="comparePolicyChart"></canvas>
         </div>
-        <div id="policyCompareCards"></div>
+        <div id="policyCompareCards" class="compare-desktop-only"></div>
       </div>
       
       <h3 class="section-title mt-xl">📅 เปรียบเทียบนโยบายรายวัน (10 รสขม)</h3>
@@ -560,10 +560,33 @@ function renderPolicyDailyTable(year1, year2) {
     `;
 
     // Mobile Section
+    let dailyDetailsHtml = '<div class="policy-mobile-details" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--glass-border);">';
+    fest.dates.forEach((d, idx) => {
+      const v1 = map1[d] ? (Number(map1[d][p.key]) || 0) : 0;
+      const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
+      const changeYear = calcChange(v1, v2);
+      const icon = changeYear.direction === 'increase' ? '🔺' : changeYear.direction === 'decrease' ? '🔽' : '—';
+      
+      dailyDetailsHtml += `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed var(--glass-border); font-size: 0.85rem;">
+          <div style="color: var(--text-secondary);">${formatDateShort(`2000-${d}`)}</div>
+          <div style="display: flex; gap: 16px; align-items: center; justify-content: flex-end; width: 60%;">
+             <span class="${valClass(v1)}" style="font-weight:600; width: 30%; text-align:right;">${v1}</span>
+             <span style="color:var(--text-muted); width: 30%; text-align:right;">${v2}</span>
+             <span style="width: 20%; text-align:right;" class="${changeYear.direction === 'increase' ? 'text-danger' : changeYear.direction === 'decrease' ? 'text-success' : 'text-muted'}">${icon}</span>
+          </div>
+        </div>
+      `;
+    });
+    dailyDetailsHtml += '</div>';
+
     mobileHtml += `
       <div class="policy-mobile-item" style="border-left-color: ${p.color}">
-        <div class="policy-mobile-header">
-          <div class="policy-mobile-title">${p.emoji} ${p.label}</div>
+        <div class="policy-mobile-header" style="cursor: pointer;" onclick="const d = this.parentElement.querySelector('.policy-mobile-details'); const i = this.querySelector('.toggle-icon'); if(d.style.display==='none'){d.style.display='block'; i.style.transform='rotate(180deg)';}else{d.style.display='none'; i.style.transform='rotate(0deg)';}">
+          <div class="policy-mobile-title">
+            ${p.emoji} ${p.label}
+            <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s; margin-left: 4px; color: var(--text-muted);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
           <span class="change-badge ${totalChange.direction} mini">${totalChange.pct}${totalChange.pct === 'N/A' ? '' : '%'}</span>
         </div>
         <div class="policy-mobile-grid">
@@ -582,6 +605,7 @@ function renderPolicyDailyTable(year1, year2) {
             <span class="lbl">แนวโน้ม</span>
           </div>
         </div>
+        ${dailyDetailsHtml}
       </div>
     `;
   });
