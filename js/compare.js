@@ -452,13 +452,13 @@ function renderPolicyDailyTable(year1, year2) {
             const prevD = fest.dates[idx-1];
             const v1Prev = map1[prevD] ? (Number(map1[prevD][p.key]) || 0) : 0;
             const changeDay = calcChange(v1, v1Prev);
-            const iconDay = changeDay.direction === 'increase' ? '⬆️' : changeDay.direction === 'decrease' ? '⬇️' : '➖';
+            const iconDay = changeDay.direction === 'increase' ? '↑' : changeDay.direction === 'decrease' ? '↓' : '-';
             dayTrendHtml = `<span class="trend-icon ${changeDay.direction}" title="เทียบเมื่อวาน: ${changeDay.pct}% (เมื่อวาน: ${v1Prev})">${iconDay}</span>`;
           }
 
           // 2. Year-over-Year Trend (เทียบกับปีก่อนหน้า)
           const changeYear = calcChange(v1, v2);
-          const iconYear = changeYear.direction === 'increase' ? '🔼' : changeYear.direction === 'decrease' ? '🔽' : '⏺️';
+          const iconYear = changeYear.direction === 'increase' ? '▲' : changeYear.direction === 'decrease' ? '▼' : '•';
           const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}" title="เทียบปีก่อนหน้า (ปี ${year2.year}): ${changeYear.pct}% (ปี ${year2.year}: ${v2})">${iconYear}</span>`;
 
           return `
@@ -478,7 +478,7 @@ function renderPolicyDailyTable(year1, year2) {
             <span class="v1 strong">${rowTotal1}</span>
             <div class="trends">
               <span class="trend-icon ${totalChange.direction}" title="เทียบกับปี ${year2.year}: ${totalChange.pct}% (ปี ${year2.year}: ${rowTotal2})">
-                ${totalChange.direction === 'increase' ? '🔼' : totalChange.direction === 'decrease' ? '🔽' : '⏺️'}
+                ${totalChange.direction === 'increase' ? '▲' : totalChange.direction === 'decrease' ? '▼' : '•'}
               </span>
             </div>
           </div>
