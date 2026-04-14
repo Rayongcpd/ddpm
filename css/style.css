@@ -1689,3 +1689,11 @@ textarea.form-control {
   font-size: 1.3rem;
   color: var(--accent-blue);
 }
+
+/* Value Contrast Helpers */
+.v-zero { opacity: 0.25; font-weight: 400 !important; }
+.v-active { opacity: 1; font-weight: 800 !important; }
+.compare-table .v-active.text-warning { color: var(--accent-gold) !important; }
+.compare-table .v-active.text-danger { color: var(--accent-red) !important; }
+.compare-table .v-active.text-accent { color: var(--accent-blue) !important; }
+

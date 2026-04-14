@@ -27,6 +27,13 @@ function getThemeColors() {
   };
 }
 
+/**
+ * Utility: Get class for value contrast/dimming
+ */
+function valClass(v) {
+  return Number(v || 0) > 0 ? 'v-active' : 'v-zero';
+}
+
 // ========== Initialize ==========
 document.addEventListener('DOMContentLoaded', () => {
   initCompareControls();
@@ -170,12 +177,12 @@ function renderCompareCard(title, val1, val2, yr1, yr2, type) {
       <div class="card-title mb-md">${title}</div>
       <div class="compare-values">
         <div class="year-value">
-          <div class="value ${type}">${formatNumber(val1)}</div>
+          <div class="value ${type} ${valClass(val1)}">${formatNumber(val1)}</div>
           <div class="year-label">พ.ศ. ${yr1}</div>
         </div>
         <div class="vs-divider">VS</div>
         <div class="year-value">
-          <div class="value" style="color:var(--text-secondary)">${formatNumber(val2)}</div>
+          <div class="value ${valClass(val2)}" style="color:var(--text-secondary)">${formatNumber(val2)}</div>
           <div class="year-label">พ.ศ. ${yr2}</div>
         </div>
       </div>
@@ -321,12 +328,12 @@ function renderDistrictCompareTable(year1, year2) {
     html += `
       <tr>
         <td class="text-left sticky-col font-bold">${name}</td>
-        <td>${d1.accidents || 0}</td>
-        <td class="${d1.injuries > 0 ? 'text-warning' : ''} font-bold">${d1.injuries || 0}</td>
-        <td class="${d1.deaths > 0 ? 'text-danger' : ''} font-bold">${d1.deaths || 0}</td>
-        <td style="background: rgba(255,255,255,0.01)">${d2.accidents || 0}</td>
-        <td style="background: rgba(255,255,255,0.01)" class="${d2.injuries > 0 ? 'text-warning' : ''}">${d2.injuries || 0}</td>
-        <td style="background: rgba(255,255,255,0.01)" class="${d2.deaths > 0 ? 'text-danger' : ''}">${d2.deaths || 0}</td>
+        <td class="${valClass(d1.accidents)}">${d1.accidents || 0}</td>
+        <td class="${d1.injuries > 0 ? 'text-warning' : ''} ${valClass(d1.injuries)} font-bold">${d1.injuries || 0}</td>
+        <td class="${d1.deaths > 0 ? 'text-danger' : ''} ${valClass(d1.deaths)} font-bold">${d1.deaths || 0}</td>
+        <td style="background: rgba(255,255,255,0.01)" class="${valClass(d2.accidents)}">${d2.accidents || 0}</td>
+        <td style="background: rgba(255,255,255,0.01)" class="${d2.injuries > 0 ? 'text-warning' : ''} ${valClass(d2.injuries)}">${d2.injuries || 0}</td>
+        <td style="background: rgba(255,255,255,0.01)" class="${d2.deaths > 0 ? 'text-danger' : ''} ${valClass(d2.deaths)}">${d2.deaths || 0}</td>
         <td><span class="change-badge ${change.direction} mini">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span></td>
       </tr>
     `;
@@ -406,11 +413,11 @@ function renderPolicyCompareChart(year1, year2) {
       return `
         <div class="stat-mini mb-md">
           <span class="stat-label">${item.emoji} ${item.label}</span>
-          <span class="stat-number">${formatNumber(item.v1)}</span>
+          <span class="stat-number ${valClass(item.v1)}">${formatNumber(item.v1)}</span>
           <span class="stat-vs">vs</span>
-          <span class="stat-number text-secondary">${formatNumber(item.v2)}</span>
+          <span class="stat-number text-secondary ${valClass(item.v2)}">${formatNumber(item.v2)}</span>
           <div class="stat-badge-wrap">
-            <span class="change-badge ${change.direction}">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span>
+            <span class="change-badge ${change.direction} mini">${change.pct}${change.pct === 'N/A' ? '' : '%'}</span>
           </div>
         </div>
       `;
@@ -492,7 +499,7 @@ function renderPolicyDailyTable(year1, year2) {
           return `
             <td class="daily-cell">
               <div class="cell-main">
-                <span class="v1">${v1}</span>
+                <span class="v1 ${valClass(v1)}">${v1}</span>
                 <div class="trends">
                   ${dayTrendHtml}
                   ${yearTrendHtml}
@@ -503,7 +510,7 @@ function renderPolicyDailyTable(year1, year2) {
         }).join('')}
         <td class="total-cell">
           <div class="cell-main">
-            <span class="v1 strong">${rowTotal1}</span>
+            <span class="v1 strong ${valClass(rowTotal1)}">${rowTotal1}</span>
             <div class="trends">
               <span class="trend-icon ${totalChange.direction}" title="เทียบกับปี ${year2.year}: ${totalChange.pct}${totalChange.pct === 'N/A' ? '' : '%'} (ปี ${year2.year}: ${rowTotal2})">
                 ${totalChange.direction === 'increase' ? '▲' : totalChange.direction === 'decrease' ? '▼' : '•'}
