@@ -122,10 +122,10 @@ function renderComparison(data) {
       ${renderCompareCard('🚗 อุบัติเหตุ', year1.totals.accidents, year2.totals.accidents, year1.year, year2.year, 'accidents')}
       ${renderCompareCard('🏥 บาดเจ็บ', year1.totals.injuries, year2.totals.injuries, year1.year, year2.year, 'injuries')}
       ${renderCompareCard('✝️ เสียชีวิต', year1.totals.deaths, year2.totals.deaths, year1.year, year2.year, 'deaths')}
-      ${renderCompareCard('🎯 ดัชนีความรุนแรง (%)', 
-        year1.totals.accidents > 0 ? (year1.totals.deaths / year1.totals.accidents * 100).toFixed(1) : 0, 
-        year2.totals.accidents > 0 ? (year2.totals.deaths / year2.totals.accidents * 100).toFixed(1) : 0, 
-        year1.year, year2.year, 'safe')}
+      ${renderCompareCard('🎯 ดัชนีความรุนแรง (%)',
+    year1.totals.accidents > 0 ? (year1.totals.deaths / year1.totals.accidents * 100).toFixed(1) : 0,
+    year2.totals.accidents > 0 ? (year2.totals.deaths / year2.totals.accidents * 100).toFixed(1) : 0,
+    year1.year, year2.year, 'safe')}
     </div>
 
     <!-- Daily Comparison Chart -->
@@ -377,7 +377,7 @@ function renderDistrictCompareTable(year1, year2) {
     `;
   });
 
-  desktopHtml += '</tbody></table>' ;
+  desktopHtml += '</tbody></table>';
   mobileHtml += '</div>';
   container.innerHTML = desktopHtml + mobileHtml;
 }
@@ -447,7 +447,7 @@ function renderPolicyCompareChart(year1, year2) {
 
     cardsContainer.innerHTML = sortedItems.map(item => {
       const change = calcChange(item.v1, item.v2);
-      
+
       return `
         <div class="stat-mini mb-md">
           <span class="stat-label">${item.emoji} ${item.label}</span>
@@ -477,15 +477,15 @@ function renderPolicyDailyTable(year1, year2) {
   // Map data by [datePart (MM-DD)][policyKey]
   const map1 = {};
   const map2 = {};
-  daily1.forEach(r => { 
+  daily1.forEach(r => {
     const dStr = String(r.date);
     const dayPart = dStr.includes('-') ? dStr.slice(-5) : dStr;
-    map1[dayPart] = r; 
+    map1[dayPart] = r;
   });
-  daily2.forEach(r => { 
+  daily2.forEach(r => {
     const dStr = String(r.date);
     const dayPart = dStr.includes('-') ? dStr.slice(-5) : dStr;
-    map2[dayPart] = r; 
+    map2[dayPart] = r;
   });
 
   let desktopHtml = `
@@ -518,25 +518,27 @@ function renderPolicyDailyTable(year1, year2) {
       <tr>
         <td class="policy-name text-left font-bold">${p.emoji} ${p.label}</td>
         ${fest.dates.map((d, idx) => {
-          const v1 = map1[d] ? (Number(map1[d][p.key]) || 0) : 0;
-          const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
-          
-          let dayTrendHtml = '';
-          if (idx > 0) {
-            const prevD = fest.dates[idx-1];
-            const v1Prev = map1[prevD] ? (Number(map1[prevD][p.key]) || 0) : 0;
-            const changeDay = calcChange(v1, v1Prev);
-            const iconDay = changeDay.direction === 'increase' ? '↑' : changeDay.direction === 'decrease' ? '↓' : '-';
-            dayTrendHtml = `<span class="trend-icon ${changeDay.direction}">${iconDay}</span>`;
-          }
+      const v1 = map1[d] ? (Number(map1[d][p.key]) || 0) : 0;
+      const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
 
-          const changeYear = calcChange(v1, v2);
-          const iconYear = changeYear.direction === 'increase' ? '▲' : changeYear.direction === 'decrease' ? '▼' : '•';
-          const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}">${iconYear}</span>`;
+      let dayTrendHtml = '';
+      let changeDayText = '(ไม่มีข้อมูลวันก่อนหน้า)';
+      if (idx > 0) {
+        const prevD = fest.dates[idx - 1];
+        const v1Prev = map1[prevD] ? (Number(map1[prevD][p.key]) || 0) : 0;
+        const changeDay = calcChange(v1, v1Prev);
+        const iconDay = changeDay.direction === 'increase' ? '↑' : changeDay.direction === 'decrease' ? '↓' : '-';
+        dayTrendHtml = `<span class="trend-icon ${changeDay.direction}">${iconDay}</span>`;
+        changeDayText = `เทียบวันก่อนหน้า (${v1Prev}): ${iconDay} ${changeDay.pct}${changeDay.pct === 'N/A' ? '' : '%'}`;
+      }
 
-          const tooltipText = `ปี ${year1.year}: ${v1} | ปี ${year2.year}: ${v2}\nเปลี่ยนแปลง: ${changeYear.pct}${changeYear.pct === 'N/A' ? '' : '%'}`;
+      const changeYear = calcChange(v1, v2);
+      const iconYear = changeYear.direction === 'increase' ? '▲' : changeYear.direction === 'decrease' ? '▼' : '•';
+      const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}">${iconYear}</span>`;
 
-          return `
+      const tooltipText = `ปี ${year1.year}: ${v1} | ปี ${year2.year}: ${v2}\nเทียบปี ${year2.year}: ${iconYear} ${changeYear.pct}${changeYear.pct === 'N/A' ? '' : '%'}\n${changeDayText}`;
+
+      return `
             <td class="daily-cell" title="${tooltipText}">
               <div class="cell-main">
                 <span class="v1 ${valClass(v1)}">${v1}</span>
@@ -547,7 +549,7 @@ function renderPolicyDailyTable(year1, year2) {
               </div>
             </td>
           `;
-        }).join('')}
+    }).join('')}
         <td class="total-cell" title="รวมปี ${year1.year}: ${rowTotal1} | รวมปี ${year2.year}: ${rowTotal2}\nเปลี่ยนแปลง: ${totalChange.pct}${totalChange.pct === 'N/A' ? '' : '%'}">
           <div class="cell-main">
             <span class="v1 strong ${valClass(rowTotal1)}">${rowTotal1}</span>
@@ -568,7 +570,7 @@ function renderPolicyDailyTable(year1, year2) {
       const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
       const changeYear = calcChange(v1, v2);
       const icon = changeYear.direction === 'increase' ? '🔺' : changeYear.direction === 'decrease' ? '🔽' : '—';
-      
+
       dailyDetailsHtml += `
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed var(--glass-border); font-size: 0.85rem;">
           <div style="color: var(--text-secondary);">${formatDateShort(`2000-${d}`)}</div>
@@ -612,7 +614,7 @@ function renderPolicyDailyTable(year1, year2) {
     `;
   });
 
-  desktopHtml += '</tbody></table>' ;
+  desktopHtml += '</tbody></table>';
   mobileHtml += '</div>';
   container.innerHTML = desktopHtml + mobileHtml;
 }
