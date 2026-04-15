@@ -522,26 +522,24 @@ function renderPolicyDailyTable(year1, year2) {
       const v2 = map2[d] ? (Number(map2[d][p.key]) || 0) : 0;
 
       let dayTrendHtml = '';
-      let changeDayText = '(ไม่มีข้อมูลวันก่อนหน้า)';
       if (idx > 0) {
         const prevD = fest.dates[idx - 1];
         const v1Prev = map1[prevD] ? (Number(map1[prevD][p.key]) || 0) : 0;
         const changeDay = calcChange(v1, v1Prev);
         const iconDay = changeDay.direction === 'increase' ? '↑' : changeDay.direction === 'decrease' ? '↓' : '-';
-        dayTrendHtml = `<span class="trend-icon ${changeDay.direction}">${iconDay}</span>`;
-        changeDayText = `เทียบวันก่อนหน้า (${v1Prev}): ${iconDay} ${changeDay.pct}${changeDay.pct === 'N/A' ? '' : '%'}`;
+        const dayTooltip = `เทียบวันก่อนหน้า (${v1Prev}): ${changeDay.pct}${changeDay.pct === 'N/A' ? '' : '%'}`;
+        dayTrendHtml = `<span class="trend-icon ${changeDay.direction}" title="${dayTooltip}">${iconDay}</span>`;
       }
 
       const changeYear = calcChange(v1, v2);
       const iconYear = changeYear.direction === 'increase' ? '▲' : changeYear.direction === 'decrease' ? '▼' : '•';
-      const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}">${iconYear}</span>`;
-
-      const tooltipText = `ปี ${year1.year}: ${v1} | ปี ${year2.year}: ${v2}\nเทียบปี ${year2.year}: ${iconYear} ${changeYear.pct}${changeYear.pct === 'N/A' ? '' : '%'}\n${changeDayText}`;
+      const yearTooltip = `ปี ${year1.year}: ${v1} | ปี ${year2.year}: ${v2}\nเทียบปี ${year2.year}: ${changeYear.pct}${changeYear.pct === 'N/A' ? '' : '%'}`;
+      const yearTrendHtml = `<span class="trend-icon ${changeYear.direction}" title="${yearTooltip}">${iconYear}</span>`;
 
       return `
-            <td class="daily-cell" title="${tooltipText}">
+            <td class="daily-cell">
               <div class="cell-main">
-                <span class="v1 ${valClass(v1)}">${v1}</span>
+                <span class="v1 ${valClass(v1)}" title="จำนวนปี ${year1.year}: ${v1}">${v1}</span>
                 <div class="trends">
                   ${dayTrendHtml}
                   ${yearTrendHtml}
